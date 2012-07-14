@@ -1,0 +1,48 @@
+<div class="paginator navbar">
+	<div class="navbar-inner">
+		<div class="container">
+		{form formPaginator}
+		<div class="items-per-page">
+			<div class="activity-indicator"></div>
+			Showing: {$from} - {$to} of {$totalRecords}
+		{input itemsPerPage}
+		{input btnSubmitPaginator}
+			<a class="reset ajax" n:href="reset!" title="Reset"><span class="icon normal refresh"></span></a>
+		</div>
+		
+		<div class="pagination">
+			<ul>
+				<li n:class="$page === 1 ? disabled">	
+					<a class="ajax" n:href="changePage! page => 1" >
+						First
+					</a>
+				</li>
+				
+				<li n:class="$previousPage <= 0 ? disabled, previous">
+					<a class="ajax"  n:href="changePage page => $previousPage">
+						Previous
+					</a>
+				</li>
+			
+				
+				
+				<li n:class="!($nextPage <= $totalPages) ? disabled, next">
+					<a class="ajax"  n:href="changePage page => $nextPage">
+						Next
+					</a>
+				</li>
+				
+				<li n:class="$page === $totalPages ? last">
+					<a class="ajax" n:href="changePage page => $totalPages">
+						Last
+					</a>
+				</li>
+				
+				<li>{input page} of {$totalPages}</li>
+			</ul>	
+		</div>
+			
+		{/form}
+		</div>
+	</div>
+</div>

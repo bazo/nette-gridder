@@ -1,0 +1,21 @@
+{
+    "name": "bazo/gridder",
+	"type": "library",
+    "description": "Datagrid for Nette framework with Mongo ODM support",
+    "keywords": ["datagrid","nette","mongodb","mongo odm", "odm"],
+    "homepage": "https://github.com/bazo/nette-gridder",
+    "authors": [
+        {
+            "name": "Martin Bažík",
+            "email": "martin@bazo.sk",
+            "homepage": "http://bazo.sk"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+		"bazo/nette-form-controls": "*"
+    },
+	"autoload": {
+        "psr-0": { "Bazo\\Gridder": "" }
+    }
+}
