@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * @author Martin Bazik
  * @ODM\MappedSuperClass
  */
-abstract class Document extends \Nette\Object implements ArrayAccess
+abstract class Document extends \Nette\Object implements \ArrayAccess
 {
 	public function offsetExists($offset)
     {
