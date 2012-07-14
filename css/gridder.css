@@ -1,0 +1,37 @@
+.gridder .filters form div{
+	width: auto;
+	display: inline-block;
+	float: left;
+	margin-right: 20px;
+}
+.gridder .filters {
+	clear: both;
+	overflow: hidden;
+	margin-bottom: 20px;
+}
+.gridder .operations{
+	margin-bottom: 10px;
+}
+.gridder .operations input{
+	margin-right: 10px;
+}
+.gridder .checkbox-list{
+	width: 100%;
+}
+.gridder .checkbox-list span{
+	float: left;
+	display: inline-block;
+	width: 15%;
+	margin-right: 15px;
+	overflow: hidden;
+}
+.gridder .checkbox-list span input{
+	float: left;
+	margin-right: 10px;
+}
+.gridder .checkbox-list span label{
+	float: left;
+}
+.gridder .range-input input:first-child{
+	margin-right: 20px;
+}
