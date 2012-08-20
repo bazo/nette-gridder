@@ -16,6 +16,6 @@
 		"bazo/nette-form-controls": "*"
     },
 	"autoload": {
-        "psr-0": { "Gridder": "src/" }
+        "psr-0": { "": "src/" }
     }
 }
