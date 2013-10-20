@@ -28,7 +28,7 @@ class DateTimeColumn extends BaseColumn
 
 	protected function formatValue($value)
 	{
-		if ($value === null) {
+		if ($value === NULL) {
 			return 'N/A';
 		}
 		return $value->format($this->format);

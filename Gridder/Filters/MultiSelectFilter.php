@@ -16,11 +16,11 @@ class MultiSelectFilter extends Filter
 	private $items;
 
 
-	public function __construct(IContainer $parent, $name, $items = [], $filterField = null)
+	public function __construct(IContainer $parent, $name, $items = [], $filterField = NULL)
 	{
 		parent::__construct($parent, $name);
 		$this->items = $items;
-		if ($filterField === null) {
+		if ($filterField === NULL) {
 			$this->filterField = $parent->name;
 		} else {
 			$this->filterField = $filterField;
@@ -43,7 +43,7 @@ class MultiSelectFilter extends Filter
 
 	public function getFilter(&$value)
 	{
-		return new FilterObject($this->filterField, self::IN, $value, null);
+		return new FilterObject($this->filterField, self::IN, $value, NULL);
 	}
 
 

@@ -22,13 +22,13 @@ class DynamicAction extends Action
 		$this->fillParams();
 		$output = '';
 		$this->dynamicChange[0]($this->value, $this->record, $this);
-		if ($this->showTitle == true) {
+		if ($this->showTitle == TRUE) {
 			$title = $this->title;
 		} else {
 			$title = '';
 		}
 		if (empty($this->onActionRender)) {
-			$icon = $this->icon != null ? $this->icon : $this->title;
+			$icon = $this->icon != NULL ? $this->icon : $this->title;
 			$output = Html::el('a')
 					->add(Html::el('span')
 							->class(sprintf('icon %s', Strings::lower($icon))))

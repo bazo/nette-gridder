@@ -50,7 +50,7 @@ class Gridder extends Control
 	public $hasFilters;
 
 	/** @var bool */
-	public $autoAddFilters = false;
+	public $autoAddFilters = FALSE;
 
 
 	const ORDER_BY_ASC = 'up';
@@ -120,7 +120,7 @@ class Gridder extends Control
 	{
 		$this->itemsPerPage = $itemsPerPage;
 		$this->paginatorOptions['defaultItem'] = $itemsPerPage;
-		if (array_search($itemsPerPage, $this->paginatorOptions['displayedItems']) == false) {
+		if (array_search($itemsPerPage, $this->paginatorOptions['displayedItems']) == FALSE) {
 			array_push($this->paginatorOptions['displayedItems'], $itemsPerPage);
 			sort($this->paginatorOptions['displayedItems']);
 		}
@@ -161,9 +161,9 @@ class Gridder extends Control
 	 * @param Closure|Callback $callback
 	 * @return Operation
 	 */
-	public function addOperation($name, $callback = null)
+	public function addOperation($name, $callback = NULL)
 	{
-		$this->hasOperations = true;
+		$this->hasOperations = TRUE;
 		if ($name instanceof Operation) {
 			if (in_array($name->getName(), array_keys($this->operations))) {
 				throw new Exception(sprintf('Operation with name %s already exists', $name));
@@ -191,9 +191,9 @@ class Gridder extends Control
 		//$renderer->wrappers['form']['container'] = \Nette\Utils\Html::el('div')->class('filter-form');
 		$renderer->wrappers['form']['errors'] = FALSE;
 		$renderer->wrappers['group']['container'] = 'div';
-		$renderer->wrappers['group']['label'] = null;
+		$renderer->wrappers['group']['label'] = NULL;
 		$renderer->wrappers['pair']['container'] = 'div';
-		$renderer->wrappers['controls']['container'] = null;
+		$renderer->wrappers['controls']['container'] = NULL;
 		$renderer->wrappers['control']['container'] = '';
 		$renderer->wrappers['control']['.odd'] = 'odd';
 		$renderer->wrappers['control']['errors'] = TRUE;
@@ -203,7 +203,7 @@ class Gridder extends Control
 
 		if ($this->hasFilters) {
 			$filters = $form->addContainer('filters');
-			foreach ($this->getComponents(false, 'Gridder\Columns\Column') as $column) {
+			foreach ($this->getComponents(FALSE, 'Gridder\Columns\Column') as $column) {
 				if ($column->hasFilter()) {
 					$filters->addComponent($column->getFilter(), $column->name);
 					if ($form->isSubmitted()) {
@@ -211,7 +211,7 @@ class Gridder extends Control
 						if (isset($httpData['btnCancelFilters'])) {
 							unset($this->persister->filters);
 							$this->persister->selectedCheckboxes = [];
-							$filters[$column->name]->setValue(null);
+							$filters[$column->name]->setValue(NULL);
 						}
 					} elseif (isset($this->persister->filters[$column->name])) {
 						$filters[$column->name]->setDefaultValue($this->persister->filters[$column->name]->getValue());
@@ -285,7 +285,7 @@ class Gridder extends Control
 		$values = [];
 
 		foreach ($checkboxes as $id) {
-			$values[$id] = true;
+			$values[$id] = TRUE;
 		}
 
 		$this->persister->selectedCheckboxes = $values;
@@ -434,10 +434,10 @@ class Gridder extends Control
 	{
 		foreach ($this->persister->ordering as $sort) {
 			if (key($sort) === $column) {
-				return true;
+				return TRUE;
 			}
 		}
-		return false;
+		return FALSE;
 	}
 
 
@@ -482,7 +482,7 @@ class Gridder extends Control
 
 		//apply sorting
 
-		if ($this->persister->ordering === null) {
+		if ($this->persister->ordering === NULL) {
 			$this->persister->ordering = [];
 		}
 
@@ -507,7 +507,7 @@ class Gridder extends Control
 		$this->template->hasOperations = $this->hasOperations;
 
 		if (!$this->source->supportsFiltering()) {
-			$this->hasFilters = false;
+			$this->hasFilters = FALSE;
 		}
 		$this->template->hasFilters = $this->hasFilters;
 		$this->template->supportsSorting = $this->source->supportsSorting();

@@ -17,7 +17,7 @@ class BaseColumn extends Control implements Column
 	protected $record;
 	protected $value;
 	protected $hasFilter;
-	protected $sortable = false;
+	protected $sortable = FALSE;
 	public $onCellRender = [];
 	public $onHeaderRender = [];
 	public $valueModifier = [];
@@ -25,7 +25,7 @@ class BaseColumn extends Control implements Column
 
 	public function getCaption()
 	{
-		if ($this->caption !== null) {
+		if ($this->caption !== NULL) {
 			return $this->caption;
 		} else {
 			return $this->name;
@@ -77,8 +77,8 @@ class BaseColumn extends Control implements Column
 	 */
 	public function setFilter($type)
 	{
-		$this->hasFilter = true;
-		$this->parent->hasFilters = true;
+		$this->hasFilter = TRUE;
+		$this->parent->hasFilters = TRUE;
 		return FilterMapper::map($this, $type);
 	}
 
@@ -105,7 +105,7 @@ class BaseColumn extends Control implements Column
 	}
 
 
-	public function setSortable($sortable = true)
+	public function setSortable($sortable = TRUE)
 	{
 		$this->sortable = $sortable;
 		return $this;

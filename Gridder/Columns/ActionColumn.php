@@ -31,7 +31,7 @@ class ActionColumn extends Control
 	 * @param bool $ajax
 	 * @return Actions\Action
 	 */
-	public function addAction($title, $destination, $ajax = false)
+	public function addAction($title, $destination, $ajax = FALSE)
 	{
 		$title = Strings::lower($title);
 		$action = new Actions\Action($this, $title);
@@ -49,7 +49,7 @@ class ActionColumn extends Control
 	 * @param bool $ajax
 	 * @return DynamicAction
 	 */
-	public function addDynamicAction($title, $ajax = false)
+	public function addDynamicAction($title, $ajax = FALSE)
 	{
 		$title = Strings::lower($title);
 		$action = new \Gridder\Actions\DynamicAction($this, $title);
@@ -114,7 +114,7 @@ class ActionColumn extends Control
 	 */
 	public function getActions()
 	{
-		return $this->getComponents(false, 'Gridder\Actions\Action');
+		return $this->getComponents(FALSE, 'Gridder\Actions\Action');
 	}
 
 

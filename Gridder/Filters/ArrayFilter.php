@@ -17,11 +17,11 @@ class ArrayFilter extends Filter
 	private $items = [];
 
 
-	public function __construct(IContainer $parent, $name, array $items = [], $filterField = null)
+	public function __construct(IContainer $parent, $name, array $items = [], $filterField = NULL)
 	{
 		parent::__construct($parent, $name);
 		$this->items = ['*' => '*'] + $items;
-		if ($filterField == null) {
+		if ($filterField == NULL) {
 			$this->filterField = $name;
 		} else {
 			$this->filterField = $filterField;

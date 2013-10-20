@@ -107,7 +107,7 @@ class Action extends Component
 	 */
 	public function showTitle()
 	{
-		$this->showTitle = true;
+		$this->showTitle = TRUE;
 		return $this;
 	}
 
@@ -118,7 +118,7 @@ class Action extends Component
 	 */
 	public function hideTitle()
 	{
-		$this->showTitle = false;
+		$this->showTitle = FALSE;
 		return $this;
 	}
 
@@ -198,7 +198,7 @@ class Action extends Component
 	public function setIcon($icon)
 	{
 		$this->icon = $icon;
-		$this->hasIcon = true;
+		$this->hasIcon = TRUE;
 		return $this;
 	}
 
@@ -209,9 +209,9 @@ class Action extends Component
 	 * @param string $field
 	 * @return Action
 	 */
-	public function addParam($paramName, $field = null)
+	public function addParam($paramName, $field = NULL)
 	{
-		$field = $field == null ? $paramName : $field;
+		$field = $field == NULL ? $paramName : $field;
 		$this->dynamicParams[$paramName] = $field;
 		return $this;
 	}
@@ -223,7 +223,7 @@ class Action extends Component
 	 * @param string $value value
 	 * @return Action
 	 */
-	public function addVariable($variable, $value = null)
+	public function addVariable($variable, $value = NULL)
 	{
 		@$this->params[$variable] = $value;
 		return $this;
@@ -234,12 +234,12 @@ class Action extends Component
 	{
 		$this->fillParams();
 		$output = '';
-		if ($this->showTitle == true) {
+		if ($this->showTitle == TRUE) {
 			$title = $this->title;
 		} else {
 			$title = '';
 		}
-		$icon = $this->icon != null ? $this->icon : $this->title;
+		$icon = $this->icon != NULL ? $this->icon : $this->title;
 		$output = Html::el('a');
 		if ($this->hasIcon) {
 			$output->add(Html::el('span')

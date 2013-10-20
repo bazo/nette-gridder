@@ -24,7 +24,7 @@ class Operation
 
 	private function verifyCallback($callback)
 	{
-		if ($callback != null) {
+		if ($callback != NULL) {
 			if (!($callback instanceof Callback or $callback instanceof Closure)) {
 				throw new Exception(sprintf('Callback must be an instance of Callback or Closure, %s given', get_class($callback)));
 			}
@@ -32,7 +32,7 @@ class Operation
 	}
 
 
-	public function __construct($name, $callback = null)
+	public function __construct($name, $callback = NULL)
 	{
 		$this->name = $name;
 		$this->verifyCallback($callback);
@@ -62,7 +62,7 @@ class Operation
 
 	public function getAlias()
 	{
-		if ($this->alias != null) {
+		if ($this->alias != NULL) {
 			return $this->alias;
 		} else {
 			return $this->name;
