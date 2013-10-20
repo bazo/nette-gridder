@@ -1,7 +1,10 @@
 <?php
+
 namespace Gridder\Filters;
+
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Controls\SelectBox;
+
 /**
  * ArrayFilter
  *
@@ -9,39 +12,44 @@ use Nette\Forms\Controls\SelectBox;
  */
 class ArrayFilter extends Filter
 {
-    private
-		$filterField,
-		$items
-    ;
-    
-    public function  __construct(IContainer $parent, $name, $items = array(), $filterField = null)
-    {
-        parent::__construct($parent, $name);
-        $this->items = array('*' => '*') + $items;
-		if($filterField == null)
-		{
+
+	private $filterField;
+	private $items = [];
+
+
+	public function __construct(IContainer $parent, $name, array $items = [], $filterField = null)
+	{
+		parent::__construct($parent, $name);
+		$this->items = ['*' => '*'] + $items;
+		if ($filterField == null) {
 			$this->filterField = $name;
-		}
-		else
-		{
+		} else {
 			$this->filterField = $filterField;
 		}
-    }
-    
-	public function setItems($items)
+	}
+
+
+	public function setItems(array $items)
 	{
 		$this->items = $items;
 		return $this;
 	}
-	
-    public function getFormControl($label)
-    {
-        return new SelectBox($label, $this->items);
-    }
-    
-    public function getFilter(&$value)
-    {
-        if(is_numeric($value)) return new FilterObject($this->filterField, self::EQUAL, (int)$value, (int)$value, '*');
-        return new FilterObject($this->filterField, self::EQUAL, $value, $value, '*');
-    }
+
+
+	public function getFormControl($label)
+	{
+		return new SelectBox($label, $this->items);
+	}
+
+
+	public function getFilter(&$value)
+	{
+		if (is_numeric($value)) {
+			return new FilterObject($this->filterField, self::EQUAL, (int) $value, (int) $value, '*');
+		}
+		return new FilterObject($this->filterField, self::EQUAL, $value, $value, '*');
+	}
+
+
 }
+

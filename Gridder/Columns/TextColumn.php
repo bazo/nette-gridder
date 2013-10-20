@@ -1,5 +1,7 @@
 <?php
+
 namespace Gridder\Columns;
+
 /**
  * TextColumn
  *
@@ -7,4 +9,6 @@ namespace Gridder\Columns;
  */
 class TextColumn extends BaseColumn
 {
+	
 }
+

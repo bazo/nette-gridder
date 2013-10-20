@@ -1,5 +1,7 @@
 <?php
+
 namespace Gridder;
+
 /**
  * ColumnMapper
  *
@@ -7,17 +9,16 @@ namespace Gridder;
  */
 class ColumnMapper
 {
-	private static
-		$types = array(
-			'string' => 'TextColumn',
-			'object' => 'ObjectColumn',
-			'boolean' => 'BooleanColumn',
-			'datetime' => 'DateTimeColumn'
-		),
-			
-		$defaultColumn = 'TextColumn'
-	;		
-	
+
+	private static $types = [
+		'string' => 'TextColumn',
+		'object' => 'ObjectColumn',
+		'boolean' => 'BooleanColumn',
+		'datetime' => 'DateTimeColumn'
+	];
+	private static $defaultColumn = 'TextColumn';
+
+
 	/**
 	 *
 	 * @param Grid $grid
@@ -28,15 +29,17 @@ class ColumnMapper
 	public static function map(Gridder $grid, $name, $type)
 	{
 		$namespace = '\Gridder\Columns\\';
-		if(isset(self::$types[$type]))
-		{
+		
+		if (isset(self::$types[$type])) {
 			$class = self::$types[$type];
-		}
-		else
-		{
+		} else {
 			$class = self::$defaultColumn;
 		}
-		$class = $namespace.$class;
+		
+		$class = $namespace . $class;
 		return new $class($grid, $name);
 	}
+
+
 }
+

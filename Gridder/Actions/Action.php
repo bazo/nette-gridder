@@ -14,28 +14,26 @@ use Nette\Utils\Strings;
 class Action extends Component
 {
 
-	protected
-			$title,
-			$destination,
-			$key = 'id',
-			$value,
-			$record,
-			$showTitle = true,
-			$ajax,
-			$icon,
-			$params = array(),
-			$dynamicParams = array(),
-			$presenter,
-			$hasIcon = false
-	;
-	public
-		$onActionRender = array()
-	;
+	protected $title;
+	protected $destination;
+	protected $key = 'id';
+	protected $value;
+	protected $record;
+	protected $showTitle = TRUE;
+	protected $ajax;
+	protected $icon;
+	protected $params = [];
+	protected $dynamicParams = [];
+	protected $presenter;
+	protected $hasIcon = FALSE;
+	public $onActionRender = [];
+
 
 	public function setPresenter(&$presenter)
 	{
 		$this->presenter = $presenter;
 	}
+
 
 	/**
 	 *
@@ -45,6 +43,7 @@ class Action extends Component
 	{
 		return $this->title;
 	}
+
 
 	/**
 	 *
@@ -57,6 +56,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 *
 	 * @return string
@@ -65,6 +65,7 @@ class Action extends Component
 	{
 		return $this->destination;
 	}
+
 
 	/**
 	 *
@@ -77,6 +78,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 *
 	 * @return string Action key field name 
@@ -85,6 +87,7 @@ class Action extends Component
 	{
 		return $this->key;
 	}
+
 
 	/**
 	 *
@@ -97,6 +100,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 *
 	 * @return Action
@@ -107,6 +111,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 *
 	 * @return Action 
@@ -116,6 +121,7 @@ class Action extends Component
 		$this->showTitle = false;
 		return $this;
 	}
+
 
 	/**
 	 *
@@ -128,14 +134,15 @@ class Action extends Component
 		return $this;
 	}
 
+
 	protected function fillParams()
 	{
-		foreach($this->dynamicParams as $param => $field)
-		{
-			if(isset($this->record->$field))
+		foreach ($this->dynamicParams as $param => $field) {
+			if (isset($this->record->$field))
 				@$this->params[$param] = $this->record->$field;
 		}
 	}
+
 
 	/**
 	 *
@@ -150,6 +157,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 * Returns shown title
 	 * @return string
@@ -158,6 +166,7 @@ class Action extends Component
 	{
 		return $this->showTitle;
 	}
+
 
 	/**
 	 * Sets the title that will be shown on action
@@ -170,6 +179,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 * Return the name of icon
 	 * @return string
@@ -178,6 +188,7 @@ class Action extends Component
 	{
 		return $this->icon;
 	}
+
 
 	/**
 	 * Sets icon
@@ -190,6 +201,7 @@ class Action extends Component
 		$this->hasIcon = true;
 		return $this;
 	}
+
 
 	/**
 	 * Adds dynamic parameter
@@ -204,6 +216,7 @@ class Action extends Component
 		return $this;
 	}
 
+
 	/**
 	 * Adds static variable
 	 * @param string $variable name
@@ -216,45 +229,40 @@ class Action extends Component
 		return $this;
 	}
 
+
 	public function render()
 	{
 		$this->fillParams();
 		$output = '';
-		if($this->showTitle == true)
-		{
+		if ($this->showTitle == true) {
 			$title = $this->title;
-		}
-		else
-		{
+		} else {
 			$title = '';
 		}
 		$icon = $this->icon != null ? $this->icon : $this->title;
 		$output = Html::el('a');
-		if($this->hasIcon)
-		{
+		if ($this->hasIcon) {
 			$output->add(Html::el('span')
-						->class(sprintf('icon %s', Strings::lower($icon))));
+							->class(sprintf('icon %s', Strings::lower($icon))));
 		}
-				
-		$output->href($this->presenter->link($this->destination, array($this->key => $this->value) + $this->params))
+
+		$output->href($this->presenter->link($this->destination, [$this->key => $this->value] + $this->params))
 				->title($this->title)
 				->add($title)
 		;
-		if(!empty($this->onActionRender))
-		{
-			foreach($this->onActionRender as $function)
-			{
+		if (!empty($this->onActionRender)) {
+			foreach ($this->onActionRender as $function) {
 				$output = $function($this->value, $this->record, $this->title, $output);
 			}
 		}
-		if($output instanceof Html)
-		{
-			if($this->ajax)
-			{
+		if ($output instanceof Html) {
+			if ($this->ajax) {
 				$output->addClass('ajax');
 			}
 		}
 		return $output;
 	}
 
+
 }
+

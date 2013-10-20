@@ -1,5 +1,7 @@
 <?php
+
 namespace Gridder\Columns;
+
 /**
  * ObjectColumn
  *
@@ -7,8 +9,12 @@ namespace Gridder\Columns;
  */
 class ObjectColumn extends BaseColumn
 {
+
 	protected function formatValue($value)
 	{
 		return $value;
 	}
+
+
 }
+

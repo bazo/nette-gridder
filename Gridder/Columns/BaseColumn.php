@@ -1,7 +1,10 @@
 <?php
+
 namespace Gridder\Columns;
+
 use Nette\Application\UI\Control;
 use Gridder\FilterMapper;
+
 /**
  * BaseColumn
  *
@@ -9,32 +12,27 @@ use Gridder\FilterMapper;
  */
 class BaseColumn extends Control implements Column
 {
-	protected
-		$caption,
-		$record,
-		$value,
-		$hasFilter,
-		$sortable = false
-	;
-	
-	public
-		$onCellRender = array(),
-		$onHeaderRender = array(),
-		$valueModifier = array()
-	;
-	
+
+	protected $caption;
+	protected $record;
+	protected $value;
+	protected $hasFilter;
+	protected $sortable = false;
+	public $onCellRender = [];
+	public $onHeaderRender = [];
+	public $valueModifier = [];
+
+
 	public function getCaption()
 	{
-		if($this->caption !== null)
-		{
+		if ($this->caption !== null) {
 			return $this->caption;
-		}
-		else
-		{
+		} else {
 			return $this->name;
 		}
 	}
-		
+
+
 	/**
 	 *
 	 * @param type $caption
@@ -45,12 +43,14 @@ class BaseColumn extends Control implements Column
 		$this->caption = $caption;
 		return $this;
 	}
-	
+
+
 	public function renderHeader()
 	{
 		return $this->getCaption();
 	}
-	
+
+
 	/**
 	 *
 	 * @param type $record
@@ -62,49 +62,55 @@ class BaseColumn extends Control implements Column
 		$this->value = $record[$this->name];
 		return $this;
 	}
-	
+
+
 	protected function formatValue($value)
 	{
 		return $value;
 	}
-	
+
+
 	/**
-     *
-     * @param string $type
-     * @return IFilter
-     */
-    public function setFilter($type)
-    {
-        $this->hasFilter = true;
-        $this->parent->hasFilters = true;
-        return FilterMapper::map($this, $type);
-    }
-	
+	 *
+	 * @param string $type
+	 * @return IFilter
+	 */
+	public function setFilter($type)
+	{
+		$this->hasFilter = true;
+		$this->parent->hasFilters = true;
+		return FilterMapper::map($this, $type);
+	}
+
+
 	public function hasFilter()
-    {
-        return $this->hasFilter;
-    }
-	
+	{
+		return $this->hasFilter;
+	}
+
+
 	public function getFilter()
-    {
-        return $this->getComponent('filter')->getFormControl($this->getCaption());
-    }
-	
+	{
+		return $this->getComponent('filter')->getFormControl($this->getCaption());
+	}
+
+
 	public function render()
 	{
 		$value = $this->formatValue($this->value);
-		foreach($this->valueModifier as $modifier)
-		{
+		foreach ($this->valueModifier as $modifier) {
 			$value = $modifier($value, $this->record);
 		}
 		return $value;
 	}
-	
+
+
 	public function setSortable($sortable = true)
 	{
 		$this->sortable = $sortable;
 		return $this;
 	}
+
 
 	public function isSortable()
 	{
@@ -113,3 +119,4 @@ class BaseColumn extends Control implements Column
 
 
 }
+

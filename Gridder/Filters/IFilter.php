@@ -1,10 +1,14 @@
 <?php
+
 namespace Gridder\Filters;
+
 /**
- * Description of IFilter
+ * IFilter
  *
  * @author Martin
  */
 interface IFilter
 {
+	
 }
+

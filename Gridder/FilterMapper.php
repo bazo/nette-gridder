@@ -3,22 +3,22 @@
 namespace Gridder;
 
 /**
- * Description of FilterMapper
+ * FilterMapper
  *
  * @author Martin
  */
 class FilterMapper
 {
-	private static
-		$map = array(
-			'text' => 'TextFilter',
-			'array' => 'ArrayFilter',
-			'daterange' => 'DateRangeFilter',
-			'multiselect' => 'MultiSelectFilter',
-			'daterange' => 'DateRangeFilter',
-			'range' => 'RangeFilter'
-		)
-	;
+
+	private static$map = [
+		'text' => 'TextFilter',
+		'array' => 'ArrayFilter',
+		'daterange' => 'DateRangeFilter',
+		'multiselect' => 'MultiSelectFilter',
+		'daterange' => 'DateRangeFilter',
+		'range' => 'RangeFilter'
+	];
+
 
 	/**
 	 *
@@ -32,4 +32,6 @@ class FilterMapper
 		return new $filterClass($parent, 'filter');
 	}
 
+
 }
+

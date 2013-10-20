@@ -5,6 +5,7 @@ namespace Gridder\Columns;
 use Nette\Application\UI\Control;
 use Nette\Utils\Strings;
 use Gridder\Actions;
+use Nette\Application\UI\Presenter;
 
 /**
  * Description of ActionColumn
@@ -13,16 +14,15 @@ use Gridder\Actions;
  */
 class ActionColumn extends Control
 {
+	/** @var Presenter */
+	private$presenter;
 
-	private
-	$presenter
 
-	;
-
-	public function setPresenter(&$presenter)
+	public function setPresenter(Presenter &$presenter)
 	{
 		$this->presenter = $presenter;
 	}
+
 
 	/**
 	 * Adds normal action
@@ -42,6 +42,7 @@ class ActionColumn extends Control
 		return $action;
 	}
 
+
 	/**
 	 * Adds dynamic action
 	 * @param string $title
@@ -57,6 +58,7 @@ class ActionColumn extends Control
 		return $action;
 	}
 
+
 	/**
 	 *
 	 * @param mixed $value
@@ -70,6 +72,7 @@ class ActionColumn extends Control
 		return $this;
 	}
 
+
 	/**
 	 *
 	 * @return string
@@ -78,6 +81,7 @@ class ActionColumn extends Control
 	{
 		return $this->name;
 	}
+
 
 	/**
 	 *
@@ -89,6 +93,7 @@ class ActionColumn extends Control
 		$action = String::lower($action);
 		return $this->getComponent($action);
 	}
+
 
 	/**
 	 *
@@ -102,6 +107,7 @@ class ActionColumn extends Control
 		return $this;
 	}
 
+
 	/**
 	 * Gets all actions
 	 * @return array
@@ -111,9 +117,12 @@ class ActionColumn extends Control
 		return $this->getComponents(false, 'Gridder\Actions\Action');
 	}
 
+
 	public function getActionsCount()
 	{
 		return count($this->getActions());
 	}
 
+
 }
+

@@ -10,54 +10,52 @@ use Nette\Application\UI\Form;
 use Nette\ComponentModel\IContainer;
 
 /**
- * Description of EntityBrowser
+ * Gridder
  *
  * @author Martin
  */
 class Gridder extends Control
 {
 
-	private
-		/** @var Sources\Source */
-		$source,
-		$columns = array(),
-		$actionColumns = array(),
-		$operations = array(),
-		$filters = array(),
-		$primaryKey = 'id',
-		$hasOperations,
-		/** @var array */
-		$paginatorOptions = array(
-			'displayedItems' => array(2, 5, 10, 20, 30, 40, 50, 100, 200, 500, 1000, 10000),
-			'defaultItem' => '10'
-				),
-		$translator,
-		/** @var Persisters\Persister */
-		$persister,
-		$itemsPerPage = 10,
-		$page = 1,
+	/** @var Sources\Source */
+	private $source;
+	private $columns = [];
+	private $actionColumns = [];
+	private $operations = [];
+	private $filters = [];
+	private $primaryKey = 'id';
+	private $hasOperations;
 
-		/** @var \Nette\Application\UI\Presenter */
-		$presenter,
-			
-		$totalCount,
-			
-		$class
-	;
-	public
-		/**
-		 * @internal 
-		 * @var bool
-		 */
-		$hasFilters,
-		/** @var bool */
-		$autoAddFilters = false
-	;
+	/** @var array */
+	private $paginatorOptions = [
+		'displayedItems' => [2, 5, 10, 20, 30, 40, 50, 100, 200, 500, 1000, 10000],
+		'defaultItem' => '10'
+	];
+	private $translator;
 
-	const
-		ORDER_BY_ASC = 'up',
-		ORDER_BY_DESC = 'down'
-	;
+	/** @var Persisters\Persister */
+	private $persister;
+	private $itemsPerPage = 10;
+	private $page = 1;
+
+	/** @var \Nette\Application\UI\Presenter */
+	private $presenter;
+	private $totalCount;
+	private $class;
+
+	/**
+	 * @internal 
+	 * @var bool
+	 */
+	public $hasFilters;
+
+	/** @var bool */
+	public $autoAddFilters = false;
+
+
+	const ORDER_BY_ASC = 'up';
+	const ORDER_BY_DESC = 'down';
+
 
 	/**
 	 * Returns paginator options
@@ -68,6 +66,7 @@ class Gridder extends Control
 		return $this->paginatorOptions;
 	}
 
+
 	/**
 	 * Set the translator
 	 * @param type $translator 
@@ -77,6 +76,7 @@ class Gridder extends Control
 		$this->translator = $translator;
 		$this->template->setTranslator($translator);
 	}
+
 
 	/**
 	 * Set the datasource for the table rows
@@ -89,18 +89,21 @@ class Gridder extends Control
 		return $this;
 	}
 
+
 	public function setPersister($persister)
 	{
 		$this->persister = $persister;
 		return $this;
 	}
-		
+
+
 	public function setPresenter(\Nette\Application\UI\Presenter $presenter)
 	{
 		$this->presenter = $presenter;
 		return $this;
 	}
-		
+
+
 	/**
 	 * Sets the primary key for the records, overrides the datasource setting
 	 * @param string $primaryKey
@@ -112,17 +115,18 @@ class Gridder extends Control
 		return $this;
 	}
 
+
 	public function setInitialItemsPerPage($itemsPerPage)
 	{
 		$this->itemsPerPage = $itemsPerPage;
 		$this->paginatorOptions['defaultItem'] = $itemsPerPage;
-		if(array_search($itemsPerPage, $this->paginatorOptions['displayedItems']) == false)
-		{
+		if (array_search($itemsPerPage, $this->paginatorOptions['displayedItems']) == false) {
 			array_push($this->paginatorOptions['displayedItems'], $itemsPerPage);
 			sort($this->paginatorOptions['displayedItems']);
 		}
 		return $this;
 	}
+
 
 	/**
 	 * Adds a column to show
@@ -135,6 +139,7 @@ class Gridder extends Control
 		$this->columns[] = $name;
 		return ColumnMapper::map($this, $name, $type, $this->autoAddFilters);
 	}
+
 
 	/**
 	 * Adds an action column
@@ -149,6 +154,7 @@ class Gridder extends Control
 		return $actionColumn;
 	}
 
+
 	/**
 	 * Adds an operation
 	 * @param string|Operation $name
@@ -158,19 +164,14 @@ class Gridder extends Control
 	public function addOperation($name, $callback = null)
 	{
 		$this->hasOperations = true;
-		if($name instanceof Operation)
-		{
-			if(in_array($name->getName(), array_keys($this->operations)))
-			{
+		if ($name instanceof Operation) {
+			if (in_array($name->getName(), array_keys($this->operations))) {
 				throw new Exception(sprintf('Operation with name %s already exists', $name));
 			}
 			$this->operations[$name->getName()] = $name;
 			return $this->operations[$name->getName()];
-		}
-		else
-		{
-			if(in_array($name, array_keys($this->operations)))
-			{
+		} else {
+			if (in_array($name, array_keys($this->operations))) {
 				throw new Exception(sprintf('Operation with name %s already exists', $name));
 			}
 			$this->operations[$name] = new Operation($name, $callback);
@@ -178,6 +179,7 @@ class Gridder extends Control
 			return $this->operations[$name];
 		}
 	}
+
 
 	protected function createComponentFormFilter($name)
 	{
@@ -198,32 +200,25 @@ class Gridder extends Control
 		$renderer->wrappers['label']['container'] = '';
 		$renderer->wrappers['label']['suffix'] = ':';
 		$renderer->wrappers['control']['requiredsuffix'] = " \xE2\x80\xA2";
-		
-		if($this->hasFilters)
-		{
+
+		if ($this->hasFilters) {
 			$filters = $form->addContainer('filters');
-			foreach($this->getComponents(false, 'Gridder\Columns\Column') as $column)
-			{
-				if($column->hasFilter())
-				{
+			foreach ($this->getComponents(false, 'Gridder\Columns\Column') as $column) {
+				if ($column->hasFilter()) {
 					$filters->addComponent($column->getFilter(), $column->name);
-					if($form->isSubmitted())
-					{
+					if ($form->isSubmitted()) {
 						$httpData = $form->getHttpData();
-						if(isset($httpData['btnCancelFilters']))
-						{
+						if (isset($httpData['btnCancelFilters'])) {
 							unset($this->persister->filters);
-							$this->persister->selectedCheckboxes = array();
+							$this->persister->selectedCheckboxes = [];
 							$filters[$column->name]->setValue(null);
 						}
-					}
-					elseif(isset($this->persister->filters[$column->name]))
-					{
+					} elseif (isset($this->persister->filters[$column->name])) {
 						$filters[$column->name]->setDefaultValue($this->persister->filters[$column->name]->getValue());
 					}
 				}
 			}
-			
+
 			$form->addSubmit('btnApplyFilters', 'Použiť filtre')->onClick[] = callback($this, 'saveFilters');
 			$form['btnApplyFilters']->getControlPrototype()->class = 'btn btn-success apply';
 			$form->addSubmit('btnCancelFilters', 'Zrušiť filtre')->onClick[] = callback($this, 'cancelFilters');
@@ -231,154 +226,135 @@ class Gridder extends Control
 		}
 	}
 
+
 	public function executeOperation(\Nette\Forms\Controls\Button $button)
 	{
 		$operationName = $button->name;
 		$records = $this->persister->selectedCheckboxes;
 		$selectedRecordsIds = array_keys(array_filter($records));
 		$selectedRecords = $this->source->getRecordsByIds($selectedRecordsIds);
-		
+
 		$operation = $this->operations[$operationName];
 		$message = $operation->execute($selectedRecordsIds, $selectedRecords);
-		if($message instanceof Message)
-		{
+		if ($message instanceof Message) {
 			$this->flashMessage($message->getMessage(), $message->getType());
 			$this->invalidateControl('flash');
 		}
 	}
 
+
 	public function saveFilters(\Nette\Forms\Controls\Button $button)
 	{
 		$values = $button->form->values;
-		
+
 		$filters = $values['filters'];
 		$filterObjects = $this->filters;
-		foreach($filters as $filter => $value)
-		{
+		foreach ($filters as $filter => $value) {
 			$filterObjects[$filter] = $this->getComponent($filter)->getComponent('filter')->getFilter($value); //apply($this->ds, $value);
 		}
 		$this->persister->filters = $filterObjects;
 		$this->invalidateControl();
-		
-		$this->persister->selectedCheckboxes = array();
+
+		$this->persister->selectedCheckboxes = [];
 	}
+
 
 	public function cancelFilters(\Nette\Forms\Controls\Button $button)
 	{
 		$this->invalidateControl();
 	}
 
+
 	public function addRecordCheckbox($id)
 	{
-		if(!$this['formOperations']->isSubmitted())
-		{
+		if (!$this['formOperations']->isSubmitted()) {
 			$this['formOperations']['records']->addCheckbox($id);
-			if(isset($this->persister->recordCheckboxes))
-			{
+			if (isset($this->persister->recordCheckboxes)) {
 				$checkboxes = $this->persister->recordCheckboxes;
-			}
-			else
-			{
-				$checkboxes = array();
+			} else {
+				$checkboxes = [];
 			}
 			$checkboxes[$id] = $id;
 			$this->persister->recordCheckboxes = $checkboxes;
 		}
 	}
-	
+
+
 	public function setSelectedCheckboxes($checkboxes)
 	{
-		$values = array();
-		
-		foreach($checkboxes as $id)
-		{
+		$values = [];
+
+		foreach ($checkboxes as $id) {
 			$values[$id] = true;
 		}
-		
+
 		$this->persister->selectedCheckboxes = $values;
 		return $this;
 	}
-	
+
+
 	protected function createComponentFormOperations($name)
 	{
 		$form = new Form($this, $name);
 		$form->getElementPrototype()->class = 'ajax';
 		$form->setTranslator($this->translator);
-		
-		if($this->hasOperations)
-		{
-			$operations = array();
-			foreach($this->operations as $name => $operation)
-			{
+
+		if ($this->hasOperations) {
+			$operations = [];
+			foreach ($this->operations as $name => $operation) {
 				$operations[$name] = $operation->getAlias();
 			}
-			//$form->addSelect('operation', 'Operation', $operations);
-			//$form->addSubmit('btnExecuteOperation', 'Execute')->onClick[] = callback($this, 'executeOperation');
 			
-			foreach($this->operations as $name => $operation)
-			{
+			foreach ($this->operations as $name => $operation) {
 				$gridder = $this;
 				$form->addSubmit($name, $operation->getAlias())->onClick[] = callback($this, 'executeOperation');
 			}
-			
+
 			$records = $form->addContainer('records');
-			if($form->isSubmitted())
-			{
-				if(isset($this->persister->recordCheckboxes))
-				{
+			if ($form->isSubmitted()) {
+				if (isset($this->persister->recordCheckboxes)) {
 					$checkboxes = $this->persister->recordCheckboxes;
-					foreach($checkboxes as $id)
-					{
+					foreach ($checkboxes as $id) {
 						$records->addCheckbox($id);
 					}
 				}
 			}
 		}
-		/*
-		for($i = 1; $i <= $this->totalCount; $i++)
-		{
-			$form->addCheckbox('rec_'.$i);
-		}
-		*/
 		$form->onSuccess[] = callback($this, 'formOperationsSubmitted');
 		return $form;
 	}
-	
+
+
 	public function formOperationsSubmitted(Form $form)
 	{
 		$values = $form->getValues();
-		
-		if(!is_array($this->persister->selectedCheckboxes))
-		{
-			$this->persister->selectedCheckboxes = array();
+
+		if (!is_array($this->persister->selectedCheckboxes)) {
+			$this->persister->selectedCheckboxes = [];
 		}
-		
-		$this->persister->selectedCheckboxes = array_merge($this->persister->selectedCheckboxes, (array)$values->records);
-		
-		if($this->presenter->isAjax())
-		{
+
+		$this->persister->selectedCheckboxes = array_merge($this->persister->selectedCheckboxes, (array) $values->records);
+
+		if ($this->presenter->isAjax()) {
 			$this->presenter->terminate();
 		}
 	}
-	
+
+
 	public function createComponentFormPaginator($name)
 	{
 		$form = new Form($this, $name);
 		$form->getElementPrototype()->class = 'ajax';
 		$options = array_combine(array_values($this->paginatorOptions['displayedItems']), $this->paginatorOptions['displayedItems']);
-		$pageItems = array();
-		for($i = 1; $i <= $this->persister->totalPages; $i++)
-		{
+		$pageItems = [];
+		for ($i = 1; $i <= $this->persister->totalPages; $i++) {
 			$pageItems[$i] = $i;
 		}
 		$form->addSelect('page', 'Page', $pageItems)->setDefaultValue($this->persister->page);
 		$form->addSelect('itemsPerPage', 'Items per page', $options);
-		if(isset($this->persister->itemsPerPage))
-		{
+		if (isset($this->persister->itemsPerPage)) {
 			$form['itemsPerPage']->setDefaultValue($this->persister->itemsPerPage);
-		}
-		else
-		{
+		} else {
 			$form['itemsPerPage']->setDefaultValue($this->paginatorOptions['defaultItem']);
 		}
 
@@ -386,15 +362,17 @@ class Gridder extends Control
 		$form->onSuccess[] = callback($this, 'paginatorSubmitted');
 	}
 
+
 	public function paginatorSubmitted(Form $form)
 	{
 		unset($this->persister->recordCheckboxes);
 		$values = $form->values;
-		$this->itemsPerPage = (int)$values->itemsPerPage;
+		$this->itemsPerPage = (int) $values->itemsPerPage;
 		$this->persister->itemsPerPage = $this->itemsPerPage;
-		$this->persister->page = $this->page = (int)$values->page;
+		$this->persister->page = $this->page = (int) $values->page;
 		$this->invalidateControl();
 	}
+
 
 	public function handleChangePage($page)
 	{
@@ -403,36 +381,34 @@ class Gridder extends Control
 		$this->invalidateControl();
 	}
 
+
 	public function handleOrderBy($column)
 	{
 		$ordering = $this->persister->ordering;
 		//$keys = array_keys($this->columns);
 		$key = array_search($column, $this->columns);
-		
-		if(isset($ordering[$key][$column]))
-		{
+
+		if (isset($ordering[$key][$column])) {
 			$currentDirection = $ordering[$key][$column];
-			switch($currentDirection)
-			{
+			switch ($currentDirection) {
 				case self::ORDER_BY_DESC:
 					$direction = self::ORDER_BY_ASC;
-					$ordering[$key] = array($column => $direction);
+					$ordering[$key] = [$column => $direction];
 					break;
 
 				case self::ORDER_BY_ASC:
 					unset($ordering[$key]);
 					break;
 			}
-		}
-		else
-		{
+		} else {
 			$direction = self::ORDER_BY_DESC;
-			$ordering[$key] = array($column => $direction);
+			$ordering[$key] = [$column => $direction];
 		}
 		ksort($ordering);
 		$this->persister->ordering = $ordering;
 		$this->invalidateControl();
 	}
+
 
 	public function handleReset()
 	{
@@ -440,108 +416,97 @@ class Gridder extends Control
 		$this->invalidateControl();
 	}
 
+
 	public function getClass()
 	{
 		return $this->class;
 	}
+
 
 	public function setClass($class)
 	{
 		$this->class = $class;
 		return $this;
 	}
-		
+
+
 	public function isOrderedByColumn($column)
 	{
-		foreach($this->persister->ordering as $sort)
-		{
-			if(key($sort) === $column)
-			{
+		foreach ($this->persister->ordering as $sort) {
+			if (key($sort) === $column) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
+
 	public function getColumnOrder($column)
 	{
-		foreach($this->persister->ordering as $sort)
-		{
-			if(key($sort) === $column)
-			{
+		foreach ($this->persister->ordering as $sort) {
+			if (key($sort) === $column) {
 				return $sort[$column];
 			}
 		}
 	}
-	
+
+
 	public function render()
 	{
 		$this->template->setFile(__DIR__ . '/template.latte');
 		$this->template->columns = $this->columns;
 		$this->template->actionColumns = $this->actionColumns;
 
-		if(isset($this->persister->itemsPerPage))
-		{
+		if (isset($this->persister->itemsPerPage)) {
 			$this->itemsPerPage = $this->persister->itemsPerPage;
 		}
-		try
-		{
+		try {
 			$totalCount = $this->source->applyFilters($this->persister->filters)->getTotalCount();
-		}
-		catch(\Exception $e)
-		{
+		} catch (\Exception $e) {
 			$totalCount = 0;
 			$this->flashMessage('Neprípustný rozsah dátumov.', 'error');
 		}
-		
-		$this->persister->totalPages = $this->template->totalPages = (int)ceil($totalCount / $this->itemsPerPage);
-		
-		if(isset($this->persister->page))
-		{
+
+		$this->persister->totalPages = $this->template->totalPages = (int) ceil($totalCount / $this->itemsPerPage);
+
+		if (isset($this->persister->page)) {
 			$this->page = $this->persister->page;
 		}
-		if($this->page > $this->template->totalPages)
-		{
+		if ($this->page > $this->template->totalPages) {
 			$this->page = $this->persister->page = 1;
 		}
-		
+
 		$this->template->page = $this->page;
 		$limit = $this->itemsPerPage;
 		$offset = ($this->page - 1) * $limit;
-		
+
 		//apply sorting
-		
-		if($this->persister->ordering === null)
-		{
-			$this->persister->ordering = array();
+
+		if ($this->persister->ordering === null) {
+			$this->persister->ordering = [];
 		}
-		
+
 		$this->source->applySorting($this->persister->ordering);
-		
-		try
-		{
+
+		try {
 			$rows = $this->source->limit($offset, $limit)->getRows();
-		}
-		catch(\Exception $e)
-		{
+		} catch (\Exception $e) {
 			//$this->flashMessage('Neprípustný rozsah dátumov.');
-			$rows = array();
+			$rows = [];
 		}
 		$this->template->nextPage = $this->page + 1;
 		$this->template->previousPage = $this->page - 1;
 		$this->template->from = $offset + 1;
 		$this->template->to = $offset + $limit;
-		
-		if($this->template->to > $totalCount)
-		{
+
+		if ($this->template->to > $totalCount) {
 			$this->template->to = $totalCount;
 		}
 		$this->template->totalRecords = $this->totalCount = $totalCount;
 		$this->template->primaryKey = $this->primaryKey;
 		$this->template->hasOperations = $this->hasOperations;
 
-		if(!$this->source->supportsFiltering())
-		{
+		if (!$this->source->supportsFiltering()) {
 			$this->hasFilters = false;
 		}
 		$this->template->hasFilters = $this->hasFilters;
@@ -554,4 +519,6 @@ class Gridder extends Control
 		$this->template->render();
 	}
 
+
 }
+

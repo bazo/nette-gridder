@@ -11,13 +11,11 @@ namespace Gridder\Filters;
 class FilterObject
 {
 
-	protected
-		$field,
-		$operator,
-		$value,
-		//$queryValue,
-		$emptyValue = ''
-	;
+	protected $field;
+	protected $operator;
+	protected $value;
+	protected $emptyValue = '';
+
 
 	public function __construct($field, $operator, $value, $emptyValue = '')
 	{
@@ -27,34 +25,42 @@ class FilterObject
 		$this->emptyValue = $emptyValue;
 	}
 
+
 	public function getValue()
 	{
 		return $this->value;
 	}
+
 
 	public function getEmptyValue()
 	{
 		return $this->emptyValue;
 	}
 
+
 	public function getOperator()
 	{
 		return $this->operator;
 	}
+
 
 	public function getQueryValue()
 	{
 		return $this->queryValue;
 	}
 
+
 	public function getField()
 	{
 		return $this->field;
 	}
+
 
 	public function notEmpty()
 	{
 		return $this->value !== $this->emptyValue;
 	}
 
+
 }
+

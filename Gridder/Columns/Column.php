@@ -1,19 +1,18 @@
 <?php
+
 namespace Gridder\Columns;
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- *
+ * Column interface
  * @author martin.bazik
  */
 interface Column
 {
-	const
-		STRING = 'string',
-		INTEGER = 'integer',
-		BOOLEAN = 'boolean'
-	;		
+
+	const STRING = 'string';
+	const INTEGER = 'integer';
+	const BOOLEAN = 'boolean';
+
+
 }
+

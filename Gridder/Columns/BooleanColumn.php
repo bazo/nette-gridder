@@ -1,5 +1,7 @@
 <?php
+
 namespace Gridder\Columns;
+
 /**
  * TextColumn
  *
@@ -7,13 +9,16 @@ namespace Gridder\Columns;
  */
 class BooleanColumn extends BaseColumn
 {
-	public
-		$trueValue = 'áno',
-		$falseValue = 'nie'
-	;
-	
+
+	public $trueValue = 'áno';
+	public $falseValue = 'nie';
+
+
 	protected function formatValue($value)
 	{
 		return $value === true ? $this->trueValue : $this->falseValue;
 	}
+
+
 }
+

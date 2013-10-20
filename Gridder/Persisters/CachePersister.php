@@ -1,11 +1,14 @@
 <?php
+
 namespace Gridder\Persisters;
 
 /**
- * Description of CachePersister
+ * sCachePersister
  *
  * @author Martin
  */
 class CachePersister extends BasePersister
 {
+	
 }
+
