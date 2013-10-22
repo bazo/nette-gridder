@@ -11,7 +11,7 @@ class BooleanColumn extends BaseColumn
 {
 
 	public $trueValue = 'yes';
-	public $falseEValue = 'no';
+	public $falseValue = 'no';
 
 
 	protected function formatValue($value)
