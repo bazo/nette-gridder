@@ -10,8 +10,8 @@ namespace Gridder\Columns;
 class BooleanColumn extends BaseColumn
 {
 
-	public $TRUEValue = 'áno';
-	public $FALSEValue = 'nie';
+	public $trueValue = 'yes';
+	public $falseEValue = 'no';
 
 
 	protected function formatValue($value)
