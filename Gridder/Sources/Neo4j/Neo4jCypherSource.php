@@ -4,6 +4,7 @@ namespace Gridder\Sources\Neo4j;
 
 use Gridder\Gridder;
 use Gridder\Helpers\Neo4j\Neo4jRowIterator;
+use Bazo\Neo4jTools\CypherQueryBuilder;
 
 /**
  * Neo4jSource
