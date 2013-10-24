@@ -27,7 +27,7 @@ class ActionColumn extends Control
 	/**
 	 * Adds normal action
 	 * @param string $title
-	 * @param string $destination
+	 * @param string|callable $destination
 	 * @param bool $ajax
 	 * @return Actions\Action
 	 */

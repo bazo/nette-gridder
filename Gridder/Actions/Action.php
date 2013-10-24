@@ -69,7 +69,7 @@ class Action extends Component
 
 	/**
 	 *
-	 * @param string $destination
+	 * @param string|callable $destination
 	 * @return Action
 	 */
 	public function setDestination($destination)
@@ -242,14 +242,27 @@ class Action extends Component
 		$icon = $this->icon != NULL ? $this->icon : $this->title;
 		$output = Html::el('a');
 		if ($this->hasIcon) {
-			$output->add(Html::el('span')
-							->class(sprintf('icon %s', Strings::lower($icon))));
+			$output
+					->add(Html::el('span')
+					->class(sprintf('icon %s', Strings::lower($icon))))
+			;
 		}
 
-		$output->href($this->presenter->link($this->destination, [$this->key => $this->value] + $this->params))
+		$params = [$this->key => $this->value] + $this->params;
+		if (is_string($this->destination)) {
+
+			$href = $this->presenter->link($this->destination, $params);
+		}
+		if (is_callable($this->destination)) {
+			$href = $this->destination($this->record, $params);
+		}
+
+		$output
+				->href($href)
 				->title($this->title)
 				->add($title)
 		;
+
 		if (!empty($this->onActionRender)) {
 			foreach ($this->onActionRender as $function) {
 				$output = $function($this->value, $this->record, $this->title, $output);
