@@ -1,6 +1,6 @@
 <?php
 
-namespace Gridder\Sources;
+namespace Gridder\Sources\Mongo;
 
 use Gridder\Gridder;
 use Doctrine\ODM\MongoDB\DocumentRepository;

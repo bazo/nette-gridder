@@ -1,0 +1,115 @@
+<div class="gridder {$class}">
+
+	<div class="filters">
+		{snippet filters}
+			{control formFilter}
+		{/snippet}
+	</div>
+
+	{snippet flash}
+		{foreach $flashes as $flash}
+			<div class="flash {$flash->type}">
+				<span class="icon medium {$flash->type}"></span>
+				<span class="message">{$flash->message}</span>
+			</div>
+		{/foreach}
+	{/snippet}
+
+	{snippet}
+		{form formOperations class=> 'formOperations'}
+
+			<div class="operations" n:if="$hasOperations">
+				{*label operation /}{input operation}{input btnExecuteOperation*}
+				{foreach $operations as $operationName => $operation}
+					{if $operation->isAjax()}
+						{input $operationName class => 'btn btn-primary ajax'}
+					{else}
+						{input $operationName class => 'btn btn-primary'}
+					{/if}
+				{/foreach}
+			</div>
+
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th n:if="$hasOperations">
+							<a href="#" class="all"><span class="icon-ok" title="Select all'"></span></a>
+							<a href="#" class="none"><span class="icon-remove" title="Select none'"></span></a>
+						</th>
+
+						<th n:foreach="$columns as $column">
+							<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $columnPrefix.'.'.$column">
+								{$control[$column]->renderHeader()}
+							</a>	
+
+							<span class="ordering-icons">
+								<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($column)" class="icon-chevron-{$control->getColumnOrder($column)}"></i>
+							</span>
+						</th>
+
+						<th class="actions" n:foreach="$actionColumns as $actionColumn" >
+							{$control[$actionColumn]->renderHeader()}
+						</th>
+					</tr>
+				</thead>
+
+				<tfoot>
+
+				</tfoot>
+
+				<tbody>
+					{foreach $rows as $row}
+						<tr n:class="$iterator->odd ? odd, $iterator->even ? even">
+
+							<td n:if="$hasOperations">
+								{?$control->addRecordCheckbox($row->$primaryKey)}
+								{if isset($selectedCheckboxes[$row->$primaryKey])}
+									{?$control['formOperations']['records'][$row->$primaryKey]->setDefaultValue($selectedCheckboxes[$row->$primaryKey])}
+								{/if}
+								{$control['formOperations']['records'][$row->$primaryKey]->control}
+							</td>
+
+							{foreach $columns as $column}
+								<td>{$control[$column]->setRecord($row)->render()}</td>
+							{/foreach}
+
+							<td class="actions" n:foreach="$actionColumns as $actionColumn">
+								<span class="action" n:foreach="$control[$actionColumn]->getActions() as $action">
+									{$action->setRecord($row)->render()}
+								</span>
+							</td>
+
+						</tr>
+					{/foreach}
+
+				</tbody>
+			</table>
+		{/form}
+
+		{include 'paginator.latte'}
+
+		<script type="text/javascript">
+			$('.formOperations input[type="checkbox"]').click(function() {
+					$(this).parents('form').ajaxSubmit();
+						});
+
+						$('.formOperations a.all').click(function() {
+					$('.formOperations input[type="checkbox"]').attr('checked', 'checked');
+							$(this).parents('form').ajaxSubmit();
+							return false;
+						});
+
+						$('.formOperations a.none').click(function() {
+					$('.formOperations input[type="checkbox"]').attr('checked', null);
+							$(this).parents('form').ajaxSubmit();
+							return false;
+						});
+
+						$('.formOperations input[type="submit"].ajax').click(function(event) {
+					$(this).parents('form').ajaxSubmit();
+							event.preventDefault();
+						})
+		</script>
+
+	{/snippet}
+</div>

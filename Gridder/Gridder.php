@@ -43,6 +43,8 @@ class Gridder extends Control
 	private $totalCount;
 	private $class;
 
+	private $neo4jMode = FALSE;
+	private $neo4jColumn = '';
 	/**
 	 * @internal 
 	 * @var bool
@@ -56,6 +58,15 @@ class Gridder extends Control
 	const ORDER_BY_ASC = 'up';
 	const ORDER_BY_DESC = 'down';
 
+	/**
+	 * @return \Gridder\Gridder
+	 */
+	public function enableNeo4jMode($column)
+	{
+		$this->neo4jMode = TRUE;
+		$this->neo4jColumn = $column;
+		return $this;
+	}
 
 	/**
 	 * Returns paginator options
@@ -453,7 +464,12 @@ class Gridder extends Control
 
 	public function render()
 	{
-		$this->template->setFile(__DIR__ . '/template.latte');
+		if($this->neo4jMode) {
+			$this->template->setFile(__DIR__ . '/neo4jTemplate.latte');
+			$this->template->columnPrefix = $this->neo4jColumn;
+		} else {
+			$this->template->setFile(__DIR__ . '/template.latte');
+		}
 		$this->template->columns = $this->columns;
 		$this->template->actionColumns = $this->actionColumns;
 
