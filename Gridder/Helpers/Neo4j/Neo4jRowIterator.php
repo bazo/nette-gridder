@@ -2,6 +2,8 @@
 
 namespace Gridder\Helpers\Neo4j;
 
+use Everyman\Neo4j\Query\ResultSet;
+
 /**
  * Neo4jRowIterator
  *
@@ -14,7 +16,7 @@ class Neo4jRowIterator implements \Iterator
 	private $resultSet;
 
 
-	function __construct(Everyman\Neo4j\Query\ResultSet $resultSet)
+	function __construct(ResultSet $resultSet)
 	{
 		$this->resultSet = $resultSet;
 	}
