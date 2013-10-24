@@ -7,7 +7,7 @@ namespace Gridder\Helpers\Neo4j;
  *
  * @author Martin Bažík <martin@bazo.sk>
  */
-class Neo4jRowIterator implements Iterator
+class Neo4jRowIterator implements \Iterator
 {
 
 	/** @var Everyman\Neo4j\Query\ResultSet */
