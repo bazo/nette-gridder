@@ -5,6 +5,8 @@ namespace Gridder\Columns;
 use Nette\Application\UI\Control;
 use Gridder\FilterMapper;
 
+
+
 /**
  * BaseColumn
  *
@@ -23,6 +25,7 @@ class BaseColumn extends Control implements Column
 	public $valueModifier = [];
 
 
+
 	public function getCaption()
 	{
 		if ($this->caption !== NULL) {
@@ -36,7 +39,7 @@ class BaseColumn extends Control implements Column
 	/**
 	 *
 	 * @param type $caption
-	 * @return \Grid\Columns\BaseColumn 
+	 * @return \Grid\Columns\BaseColumn
 	 */
 	public function setCaption($caption)
 	{
@@ -54,7 +57,7 @@ class BaseColumn extends Control implements Column
 	/**
 	 *
 	 * @param type $record
-	 * @return \Grid\Columns\BaseColumn 
+	 * @return \Grid\Columns\BaseColumn
 	 */
 	public function setRecord($record)
 	{
@@ -119,4 +122,3 @@ class BaseColumn extends Control implements Column
 
 
 }
-

@@ -9,6 +9,8 @@ use Gridder\Persisters\IPersister;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IContainer;
 
+
+
 /**
  * Gridder
  *
@@ -42,11 +44,11 @@ class Gridder extends Control
 	private $presenter;
 	private $totalCount;
 	private $class;
-
 	private $neo4jMode = FALSE;
 	private $neo4jColumn = '';
+
 	/**
-	 * @internal 
+	 * @internal
 	 * @var bool
 	 */
 	public $hasFilters;
@@ -55,8 +57,11 @@ class Gridder extends Control
 	public $autoAddFilters = FALSE;
 
 
+
 	const ORDER_BY_ASC = 'up';
 	const ORDER_BY_DESC = 'down';
+
+
 
 	/**
 	 * @return \Gridder\Gridder
@@ -67,6 +72,7 @@ class Gridder extends Control
 		$this->neo4jColumn = $column;
 		return $this;
 	}
+
 
 	/**
 	 * Returns paginator options
@@ -80,7 +86,7 @@ class Gridder extends Control
 
 	/**
 	 * Set the translator
-	 * @param type $translator 
+	 * @param type $translator
 	 */
 	public function setTranslator($translator)
 	{
@@ -91,7 +97,7 @@ class Gridder extends Control
 
 	/**
 	 * Set the datasource for the table rows
-	 * @param Sources\Source $source 
+	 * @param Sources\Source $source
 	 */
 	public function setSource(Sources\Source $source)
 	{
@@ -118,7 +124,7 @@ class Gridder extends Control
 	/**
 	 * Sets the primary key for the records, overrides the datasource setting
 	 * @param string $primaryKey
-	 * @return Gridder 
+	 * @return Gridder
 	 */
 	public function setPrimaryKey($primaryKey)
 	{
@@ -155,13 +161,13 @@ class Gridder extends Control
 	/**
 	 * Adds an action column
 	 * @param type $name
-	 * @return Columns\ActionColumn 
+	 * @return Columns\ActionColumn
 	 */
 	public function addActionColumn($name)
 	{
 		$this->actionColumns[] = $name;
 		$actionColumn = new Columns\ActionColumn($this, $name);
-		$actionColumn->setPresenter($this->presenter);
+		//$actionColumn->setPresenter($this->presenter);
 		return $actionColumn;
 	}
 
@@ -315,7 +321,7 @@ class Gridder extends Control
 			foreach ($this->operations as $name => $operation) {
 				$operations[$name] = $operation->getAlias();
 			}
-			
+
 			foreach ($this->operations as $name => $operation) {
 				$gridder = $this;
 				$form->addSubmit($name, $operation->getAlias())->onClick[] = callback($this, 'executeOperation');
@@ -361,6 +367,7 @@ class Gridder extends Control
 		for ($i = 1; $i <= $this->persister->totalPages; $i++) {
 			$pageItems[$i] = $i;
 		}
+
 		$form->addSelect('page', 'Page', $pageItems)->setDefaultValue($this->persister->page);
 		$form->addSelect('itemsPerPage', 'Items per page', $options);
 		if (isset($this->persister->itemsPerPage)) {
@@ -464,7 +471,7 @@ class Gridder extends Control
 
 	public function render()
 	{
-		if($this->neo4jMode) {
+		if ($this->neo4jMode) {
 			$this->template->setFile(__DIR__ . '/neo4jTemplate.latte');
 			$this->template->columnPrefix = $this->neo4jColumn;
 		} else {
@@ -480,10 +487,10 @@ class Gridder extends Control
 			$totalCount = $this->source->applyFilters($this->persister->filters)->getTotalCount();
 		} catch (\Exception $e) {
 			$totalCount = 0;
-			$this->flashMessage('Neprípustný rozsah dátumov.', 'error');
+			$this->flashMessage($e->getMessage(), 'danger');
 		}
 
-		$this->persister->totalPages = $this->template->totalPages = (int) ceil($totalCount / $this->itemsPerPage);
+		$this->persister->totalPages = max(1, $this->template->totalPages = (int) ceil($totalCount / $this->itemsPerPage));
 
 		if (isset($this->persister->page)) {
 			$this->page = $this->persister->page;
@@ -528,6 +535,7 @@ class Gridder extends Control
 		$this->template->hasFilters = $this->hasFilters;
 		$this->template->supportsSorting = $this->source->supportsSorting();
 		$this->template->rows = $rows;
+
 		$this->template->operations = $this->operations;
 		$this->template->selectedCheckboxes = $this->persister->selectedCheckboxes;
 		$this->template->class = $this->class;
@@ -537,4 +545,3 @@ class Gridder extends Control
 
 
 }
-

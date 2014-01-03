@@ -42,26 +42,25 @@ class BaseSource implements Source
 
 	public function getRows()
 	{
-		
+
 	}
 
 
 	public function getTotalCount()
 	{
-		
+
 	}
 
 
 	public function limit($offset, $limit)
 	{
-
 		return $this;
 	}
 
 
 	public function getRecordsByIds($ids)
 	{
-		
+
 	}
 
 
@@ -80,6 +79,12 @@ class BaseSource implements Source
 	public function supportsSorting()
 	{
 		return $this->supportsSorting;
+	}
+
+
+	public function applySorting(array $sorting = NULL)
+	{
+
 	}
 
 

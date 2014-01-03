@@ -8,6 +8,7 @@ namespace Gridder\Sources;
  */
 interface Source
 {
-	
+	public function applyFilters($filters);
+	public function applySorting(array $sorting = NULL);
 }
 

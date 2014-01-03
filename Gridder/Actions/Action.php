@@ -81,7 +81,7 @@ class Action extends Component
 
 	/**
 	 *
-	 * @return string Action key field name 
+	 * @return string Action key field name
 	 */
 	public function getKey()
 	{
@@ -114,7 +114,7 @@ class Action extends Component
 
 	/**
 	 *
-	 * @return Action 
+	 * @return Action
 	 */
 	public function hideTitle()
 	{
@@ -152,7 +152,7 @@ class Action extends Component
 	public function setRecord($record)
 	{
 		$key = $this->key;
-		$this->value = $record->$key;
+		$this->value = $record[$key];
 		$this->record = $record;
 		return $this;
 	}
@@ -254,7 +254,8 @@ class Action extends Component
 			$href = $this->presenter->link($this->destination, $params);
 		}
 		if (is_callable($this->destination)) {
-			$href = $this->destination($this->record, $params);
+			$callback = $this->destination;
+			$href = $callback($this->record, $params);
 		}
 
 		$output
