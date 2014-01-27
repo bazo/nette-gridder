@@ -23,7 +23,7 @@ class ArrayResultIterator implements \Iterator
 	public function current()
 	{
 		$current = $this->iterableResult->current();
-		return $current[0];
+		return current($current);
 	}
 
 
