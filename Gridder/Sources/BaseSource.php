@@ -14,7 +14,7 @@ class BaseSource implements Source
 	protected $filterChainMode = 'and';
 	protected $supportSFiltering = FALSE;
 	protected $supportsSorting = FALSE;
-
+	protected $metadata;
 
 	const CHAIN_MODE_AND = 'and';
 	const CHAIN_MODE_OR = 'or';
@@ -87,6 +87,10 @@ class BaseSource implements Source
 
 	}
 
+	public function getMetadata()
+	{
+		return $this->metadata;
+	}
 
 }
 

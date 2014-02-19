@@ -37,14 +37,18 @@
 							<a href="#" class="all"><span class="icon-ok" title="Select all'"></span></a>
 							<a href="#" class="none"><span class="icon-remove" title="Select none'"></span></a>
 						</th>
-
 						<th n:foreach="$columns as $column">
-							<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $column">
+							{if isset($metadata['prefix'])}
+								{var $sortColumn = $metadata['prefix'].'.'.$column}
+							{else}
+								{var $sortColumn = isset($metadata[$column]) ? $metadata[$column] : $column}
+							{/if}
+							<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $sortColumn">
 								{$control[$column]->renderHeader()}
 							</a>
 
 							<span class="ordering-icons">
-								<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($column)" class="fa fa-chevron-{$control->getColumnOrder($column)}"></i>
+								<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($sortColumn)" class="fa fa-chevron-{$control->getColumnOrder($sortColumn)}"></i>
 							</span>
 						</th>
 

@@ -2,11 +2,13 @@
 
 namespace Gridder\Sources\ORM;
 
-use Gridder\Sources\BaseSource;
-use Gridder\Exception;
-use Doctrine\ORM\QueryBuilder;
-use Gridder\Sources\ORM\EntityIterator;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+use Gridder\Exception;
+use Gridder\Gridder;
+use Gridder\Sources\BaseSource;
+
+
 
 /**
  * Description of EntitySource
@@ -16,15 +18,20 @@ use Doctrine\ORM\Query;
 class QueryBuilderSource extends BaseSource
 {
 
-	/** @var QueryBuilder */
-	protected $builder;
-	protected $hydrationMode;
-
-
-
 	const HYDRATION_SIMPLE = Query::HYDRATE_SIMPLEOBJECT;
 	const HYDRATION_COMPLEX = Query::HYDRATE_OBJECT;
 	const HYDRATION_ARRAY = Query::HYDRATE_ARRAY;
+
+
+
+	private $sortingDirections = [
+		Gridder::ORDER_BY_ASC => 'asc',
+		Gridder::ORDER_BY_DESC => 'desc'
+	];
+
+	/** @var QueryBuilder */
+	protected $builder;
+	protected $hydrationMode;
 
 
 
@@ -46,9 +53,23 @@ class QueryBuilderSource extends BaseSource
 	public function getRows()
 	{
 		$query = $this->builder->getQuery();
+
 		$result = $query->iterate([], $this->hydrationMode);
 
-		if($this->hydrationMode === self::HYDRATION_ARRAY) {
+		$selectExpressions = $this->builder->getQuery()->getAST()->selectClause->selectExpressions;
+		foreach ($selectExpressions as $expr) {
+			$expression = $expr->expression;
+
+			if (!is_object($expression)) {
+				$this->metadata['prefix'] = $expression;
+			} else {
+				$column = $expr->fieldIdentificationVariable !== NULL ? $expr->fieldIdentificationVariable : $expression->field;
+				$value = $expr->fieldIdentificationVariable !== NULL ? $expr->fieldIdentificationVariable : $expression->identificationVariable . '.' . $expression->field;
+				$this->metadata[$column] = $value;
+			}
+		}
+
+		if ($this->hydrationMode === self::HYDRATION_ARRAY) {
 			return new ArrayResultIterator($result);
 		}
 		return new EntityIterator($result, $this->builder->getEntityManager());
@@ -57,7 +78,7 @@ class QueryBuilderSource extends BaseSource
 
 	public function getTotalCount()
 	{
-		$result = $this->builder->getQuery()->execute([], \Doctrine\ORM\Query::HYDRATE_ARRAY);
+		$result = $this->builder->getQuery()->execute([], Query::HYDRATE_ARRAY);
 		return count($result);
 	}
 
@@ -86,7 +107,20 @@ class QueryBuilderSource extends BaseSource
 
 	public function applySorting(array $sorting = NULL)
 	{
+		if ($sorting !== NULL) {
+			foreach ($sorting as $sort) {
+				$this->applySort($sort);
+			}
+		}
 		return $this;
+	}
+
+
+	private function applySort(array $sort)
+	{
+		$column = key($sort);
+		$order = $this->sortingDirections[$sort[$column]];
+		$this->builder->orderBy($column, $order);
 	}
 
 

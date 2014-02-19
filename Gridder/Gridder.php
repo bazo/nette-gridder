@@ -394,6 +394,10 @@ class Gridder extends Control
 
 	public function handleChangePage($page)
 	{
+		if($page <= 0) {
+			$page = 1;
+		}
+
 		unset($this->persister->recordCheckboxes);
 		$this->persister->page = $page;
 		$this->invalidateControl();
@@ -540,6 +544,7 @@ class Gridder extends Control
 		$this->template->selectedCheckboxes = $this->persister->selectedCheckboxes;
 		$this->template->class = $this->class;
 		$this->template->ordering = $this->persister->ordering;
+		$this->template->metadata = $this->source->getMetadata();
 		$this->template->render();
 	}
 
