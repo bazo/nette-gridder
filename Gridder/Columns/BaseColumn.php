@@ -81,8 +81,38 @@ class BaseColumn extends Control implements Column
 	public function setFilter($type)
 	{
 		$this->hasFilter = TRUE;
-		$this->parent->hasFilters = TRUE;
+		$this->parent->setHasFilters();
 		return FilterMapper::map($this, $type);
+	}
+
+
+	public function addTextFilter($fieldName = NULL)
+	{
+		return $this->setFilter(\Gridder\Filters\Filter::TEXT)->setOriginalFieldName($fieldName);
+	}
+
+
+	public function addArrayFilter()
+	{
+		return $this->setFilter(\Gridder\Filters\Filter::ARRAY_FILTER);
+	}
+
+
+	public function addDateRangeFilter()
+	{
+		return $this->setFilter(\Gridder\Filters\Filter::DATE_RANGE);
+	}
+
+
+	public function addMultiselectFilter()
+	{
+		return $this->setFilter(\Gridder\Filters\Filter::MULTISELECT);
+	}
+
+
+	public function addRangeFilter()
+	{
+		return $this->setFilter(\Gridder\Filters\Filter::RANGE);
 	}
 
 

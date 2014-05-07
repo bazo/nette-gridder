@@ -1,10 +1,11 @@
 <div class="gridder {$class}">
 
-	<div class="filters">
+	{*<div class="filters">
 		{snippet filters}
 			{control formFilter}
 		{/snippet}
 	</div>
+	*}
 
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" n:snippet="flash">
@@ -17,20 +18,21 @@
 	</div>
 
 	{snippet}
-		{form formOperations class=> 'formOperations'}
+		{*form formOperations class=> 'formOperations'*}
 
-			<div class="operations" n:if="$hasOperations">
-				{*label operation /}{input operation}{input btnExecuteOperation*}
-				{foreach $operations as $operationName => $operation}
-					{if $operation->isAjax()}
-						{input $operationName class => 'btn btn-primary ajax'}
-					{else}
-						{input $operationName class => 'btn btn-primary'}
-					{/if}
-				{/foreach}
-			</div>
+		<div class="operations" n:if="$hasOperations">
+			{*label operation /}{input operation}{input btnExecuteOperation*}
+			{foreach $operations as $operationName => $operation}
+				{if $operation->isAjax()}
+					{input $operationName class => 'btn btn-primary ajax'}
+				{else}
+					{input $operationName class => 'btn btn-primary'}
+				{/if}
+			{/foreach}
+		</div>
+		{form formFilter}
+		<table>
 
-			<table>
 				<thead>
 					<tr>
 						<th n:if="$hasOperations">
@@ -57,83 +59,84 @@
 						</th>
 					</tr>
 
-					{*
-					<tr n:if="$hasFilters" >
+					<tr n:if="$hasFilters" class="filters">
 						<th n:if="$hasOperations">
 						</th>
-						<th n:foreach="$columns as $column">
+						<th n:foreach="$columns as $column" n:class="filter">
 							{if $control[$column]->hasFilter()}
-								{$control['form']['filters'][$column]->control}
+								{$form['filters'][$column]->control}
 							{/if}
 						</th>
 						<th class="actions">
-							{input btnApplyFilters class => 'btn btn-success'}
-							{input btnCancelFilters class => 'btn btn-danger'}
+							{input btnApplyFilters class => 'btn btn-success glyphicon glyphicon-ok'}
+							&nbsp;
+							{input btnCancelFilters class => 'btn btn-danger glyphicon glyphicon-remove'}
 						</th>
+
 					</tr>
-					*}
+
 				</thead>
 
-				<tfoot>
+			<tfoot>
 
-				</tfoot>
+			</tfoot>
 
-				<tbody>
-					{foreach $rows as $row}
-						<tr n:class="$iterator->odd ? odd, $iterator->even ? even">
+		<tbody>
+			{foreach $rows as $row}
+				<tr n:class="$iterator->odd ? odd, $iterator->even ? even">
 
-							<td n:if="$hasOperations">
-								{?$control->addRecordCheckbox($row->$primaryKey)}
-								{if isset($selectedCheckboxes[$row->$primaryKey])}
-									{?$control['formOperations']['records'][$row->$primaryKey]->setDefaultValue($selectedCheckboxes[$row->$primaryKey])}
-								{/if}
-								{$control['formOperations']['records'][$row->$primaryKey]->control}
-							</td>
+					<td n:if="$hasOperations">
+						{?$control->addRecordCheckbox($row->$primaryKey)}
+						{if isset($selectedCheckboxes[$row->$primaryKey])}
+							{?$control['formOperations']['records'][$row->$primaryKey]->setDefaultValue($selectedCheckboxes[$row->$primaryKey])}
+						{/if}
+						{$control['formOperations']['records'][$row->$primaryKey]->control}
+					</td>
 
-							{foreach $columns as $column}
-								<td>{$control[$column]->setRecord($row)->render()}</td>
-							{/foreach}
-
-							<td class="actions" n:foreach="$actionColumns as $actionColumn">
-								<span class="action" n:foreach="$control[$actionColumn]->getActions() as $action">
-									{$action->setRecord($row)->render()}
-								</span>
-							</td>
-
-						</tr>
+					{foreach $columns as $column}
+						<td>{$control[$column]->setRecord($row)->render()}</td>
 					{/foreach}
 
-				</tbody>
-			</table>
-		{/form}
+					<td class="actions" n:foreach="$actionColumns as $actionColumn">
+						<span class="action" n:foreach="$control[$actionColumn]->getActions() as $action">
+							{$action->setRecord($row)->render()}
+						</span>
+					</td>
 
-		{include 'paginator.latte'}
+				</tr>
+			{/foreach}
 
-		<script type="text/javascript">
-			$(function() {
+		</tbody>
+	</table>
+	{/form}
 
-				$('.formOperations input[type="checkbox"]').click(function() {
-					$(this).parents('form').ajaxSubmit();
-							});
+	{include 'paginator.latte'}
 
-							$('.formOperations a.all').click(function() {
-					$('.formOperations input[type="checkbox"]').attr('checked', 'checked');
-								$(this).parents('form').ajaxSubmit();
-								return false;
-							});
+	<script type="text/javascript">
+		$(function() {
 
-							$('.formOperations a.none').click(function() {
-					$('.formOperations input[type="checkbox"]').attr('checked', null);
-								$(this).parents('form').ajaxSubmit();
-								return false;
-							});
+			$('.formOperations input[type="checkbox"]').click(function() {
+				$(this).parents('form').ajaxSubmit();
+			});
 
-							$('.formOperations input[type="submit"].ajax').click(function(event) {
-					$(this).parents('form').ajaxSubmit();
-								event.preventDefault();
-							});
-						});
-		</script>
+			$('.formOperations a.all').click(function() {
+				$('.formOperations input[type="checkbox"]').attr('checked', 'checked');
+				$(this).parents('form').ajaxSubmit();
+				return false;
+			});
 
-	{/snippet}
+			$('.formOperations a.none').click(function() {
+				$('.formOperations input[type="checkbox"]').attr('checked', null);
+				$(this).parents('form').ajaxSubmit();
+				return false;
+			});
+
+			$('.formOperations input[type="submit"].ajax').click(function(event) {
+				$(this).parents('form').ajaxSubmit();
+				event.preventDefault();
+			});
+		});
+	</script>
+
+{/snippet}
 </div>

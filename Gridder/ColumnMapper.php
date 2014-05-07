@@ -19,27 +19,27 @@ class ColumnMapper
 	private static $defaultColumn = 'TextColumn';
 
 
+
 	/**
 	 *
 	 * @param Grid $grid
 	 * @param type $name
 	 * @param type $type
-	 * @return Columns\Column 
+	 * @return Columns\Column
 	 */
 	public static function map(Gridder $grid, $name, $type)
 	{
 		$namespace = '\Gridder\Columns\\';
-		
+
 		if (isset(self::$types[$type])) {
 			$class = self::$types[$type];
 		} else {
 			$class = self::$defaultColumn;
 		}
-		
+
 		$class = $namespace . $class;
 		return new $class($grid, $name);
 	}
 
 
 }
-

@@ -5,6 +5,8 @@ namespace Gridder\Filters;
 use \Nette\Application\UI\Control;
 use Nette\Forms\Controls\TextInput;
 
+
+
 /**
  * BaseFilter
  *
@@ -16,13 +18,20 @@ abstract class Filter extends Control implements IFilter
 
 	protected $operator = 'like';
 	protected $title;
+	protected $originalFieldName;
 
 
+
+	const TEXT = 'text';
+	const ARRAY_FILTER = 'array';
+	const DATE_RANGE = 'daterange';
+	const MULTISELECT = 'multiselect';
+	const RANGE = 'range';
 	const LIKE = 'like';
 	const EQUAL = '=';
 	const REFERENCES = 'ref';
 	const IN = 'in';
-	const RANGE = 'range';
+
 
 
 	public function setOperator($operator)
@@ -51,9 +60,20 @@ abstract class Filter extends Control implements IFilter
 
 	public function getFilter(&$value)
 	{
-		return new FilterObject($this->parent->name, $this->operator, $value, '');
+		return new FilterObject($this->parent->name, $this->operator, $value, '', $this->originalFieldName);
+	}
+
+
+	public function getOriginalFieldName()
+	{
+		return $this->originalFieldName;
+	}
+
+
+	public function setOriginalFieldName($originalFieldName)
+	{
+		$this->originalFieldName = $originalFieldName;
 	}
 
 
 }
-

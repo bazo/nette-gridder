@@ -2,6 +2,10 @@
 
 namespace Gridder;
 
+use Gridder\Filters\Filter;
+
+
+
 /**
  * FilterMapper
  *
@@ -10,14 +14,14 @@ namespace Gridder;
 class FilterMapper
 {
 
-	private static$map = [
-		'text' => 'TextFilter',
-		'array' => 'ArrayFilter',
-		'daterange' => 'DateRangeFilter',
-		'multiselect' => 'MultiSelectFilter',
-		'daterange' => 'DateRangeFilter',
-		'range' => 'RangeFilter'
+	private static $map = [
+		Filter::TEXT => 'TextFilter',
+		Filter::ARRAY_FILTER => 'ArrayFilter',
+		Filter::DATE_RANGE => 'DateRangeFilter',
+		Filter::MULTISELECT => 'MultiSelectFilter',
+		Filter::RANGE => 'RangeFilter'
 	];
+
 
 
 	/**
@@ -34,4 +38,3 @@ class FilterMapper
 
 
 }
-

@@ -1,0 +1,139 @@
+<div class="gridder {$class}">
+
+	<div class="filters">
+		{snippet filters}
+			{control formFilter}
+		{/snippet}
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" n:snippet="flash">
+			<div class="alert alert-{$flash->type} span12" n:foreach="$flashes as $flash">
+				<a class="close" data-dismiss="alert">×</a>
+				<span class="icon icon-{$flash->type}"></span>
+				<strong>{$flash->message}</strong>
+			</div>
+		</div>
+	</div>
+
+	{snippet}
+		{*form formOperations class=> 'formOperations'*}
+
+			<div class="operations" n:if="$hasOperations">
+				{*label operation /}{input operation}{input btnExecuteOperation*}
+				{foreach $operations as $operationName => $operation}
+					{if $operation->isAjax()}
+						{input $operationName class => 'btn btn-primary ajax'}
+					{else}
+						{input $operationName class => 'btn btn-primary'}
+					{/if}
+				{/foreach}
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th n:if="$hasOperations">
+							<a href="#" class="all"><span class="icon-ok" title="Select all'"></span></a>
+							<a href="#" class="none"><span class="icon-remove" title="Select none'"></span></a>
+						</th>
+						<th n:foreach="$columns as $column">
+							{if isset($metadata['prefix'])}
+								{var $sortColumn = $metadata['prefix'].'.'.$column}
+							{else}
+								{var $sortColumn = isset($metadata[$column]) ? $metadata[$column] : $column}
+							{/if}
+							<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $sortColumn">
+								{$control[$column]->renderHeader()}
+							</a>
+
+							<span class="ordering-icons">
+								<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($sortColumn)" class="fa fa-chevron-{$control->getColumnOrder($sortColumn)}"></i>
+							</span>
+						</th>
+
+						<th class="actions" n:foreach="$actionColumns as $actionColumn" >
+							{$control[$actionColumn]->renderHeader()}
+						</th>
+					</tr>
+{dump $hasFilters}
+
+					<tr n:if="$hasFilters" >
+						<th n:if="$hasOperations">
+						</th>
+						<th n:foreach="$columns as $column">
+							{if $control[$column]->hasFilter()}
+								{$control['formFilters'][$column]->control}
+							{/if}
+						</th>
+						<th class="actions">
+							{input btnApplyFilters class => 'btn btn-success'}
+							{input btnCancelFilters class => 'btn btn-danger'}
+						</th>
+					</tr>
+
+				</thead>
+
+				<tfoot>
+
+				</tfoot>
+
+				<tbody>
+					{foreach $rows as $row}
+						<tr n:class="$iterator->odd ? odd, $iterator->even ? even">
+
+							<td n:if="$hasOperations">
+								{?$control->addRecordCheckbox($row->$primaryKey)}
+								{if isset($selectedCheckboxes[$row->$primaryKey])}
+									{?$control['formOperations']['records'][$row->$primaryKey]->setDefaultValue($selectedCheckboxes[$row->$primaryKey])}
+								{/if}
+								{$control['formOperations']['records'][$row->$primaryKey]->control}
+							</td>
+
+							{foreach $columns as $column}
+								<td>{$control[$column]->setRecord($row)->render()}</td>
+							{/foreach}
+
+							<td class="actions" n:foreach="$actionColumns as $actionColumn">
+								<span class="action" n:foreach="$control[$actionColumn]->getActions() as $action">
+									{$action->setRecord($row)->render()}
+								</span>
+							</td>
+
+						</tr>
+					{/foreach}
+
+				</tbody>
+			</table>
+		{*/form*}
+
+		{include 'paginator.latte'}
+
+		<script type="text/javascript">
+			$(function() {
+
+				$('.formOperations input[type="checkbox"]').click(function() {
+					$(this).parents('form').ajaxSubmit();
+							});
+
+							$('.formOperations a.all').click(function() {
+					$('.formOperations input[type="checkbox"]').attr('checked', 'checked');
+								$(this).parents('form').ajaxSubmit();
+								return false;
+							});
+
+							$('.formOperations a.none').click(function() {
+					$('.formOperations input[type="checkbox"]').attr('checked', null);
+								$(this).parents('form').ajaxSubmit();
+								return false;
+							});
+
+							$('.formOperations input[type="submit"].ajax').click(function(event) {
+					$(this).parents('form').ajaxSubmit();
+								event.preventDefault();
+							});
+						});
+		</script>
+
+	{/snippet}
+</div>

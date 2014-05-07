@@ -121,6 +121,13 @@ class Gridder extends Control
 	}
 
 
+	public function setHasFilters()
+	{
+		$this->hasFilters = TRUE;
+		return $this;
+	}
+
+
 	/**
 	 * Sets the primary key for the records, overrides the datasource setting
 	 * @param string $primaryKey
@@ -236,9 +243,9 @@ class Gridder extends Control
 				}
 			}
 
-			$form->addSubmit('btnApplyFilters', 'Použiť filtre')->onClick[] = callback($this, 'saveFilters');
+			$form->addSubmit('btnApplyFilters', '')->onClick[] = callback($this, 'saveFilters');
 			$form['btnApplyFilters']->getControlPrototype()->class = 'btn btn-success apply';
-			$form->addSubmit('btnCancelFilters', 'Zrušiť filtre')->onClick[] = callback($this, 'cancelFilters');
+			$form->addSubmit('btnCancelFilters', '')->onClick[] = callback($this, 'cancelFilters');
 			$form['btnCancelFilters']->getControlPrototype()->class = 'btn btn-danger cancel';
 		}
 	}
@@ -270,7 +277,7 @@ class Gridder extends Control
 			$filterObjects[$filter] = $this->getComponent($filter)->getComponent('filter')->getFilter($value); //apply($this->ds, $value);
 		}
 		$this->persister->filters = $filterObjects;
-		$this->invalidateControl();
+		$this->redrawControl();
 
 		$this->persister->selectedCheckboxes = [];
 	}
@@ -394,7 +401,7 @@ class Gridder extends Control
 
 	public function handleChangePage($page)
 	{
-		if($page <= 0) {
+		if ($page <= 0) {
 			$page = 1;
 		}
 

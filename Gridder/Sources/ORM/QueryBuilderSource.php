@@ -5,8 +5,10 @@ namespace Gridder\Sources\ORM;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Gridder\Exception;
+use Gridder\Filters\FilterObject;
 use Gridder\Gridder;
 use Gridder\Sources\BaseSource;
+use Gridder\Filters\Filter;
 
 
 
@@ -32,6 +34,7 @@ class QueryBuilderSource extends BaseSource
 	/** @var QueryBuilder */
 	protected $builder;
 	protected $hydrationMode;
+	protected $supportSFiltering = TRUE;
 
 
 
@@ -50,24 +53,34 @@ class QueryBuilderSource extends BaseSource
 	}
 
 
+	private function extractMetadata()
+	{
+		static $metadata = NULL;
+
+		if (is_null($metadata)) {
+
+			$selectExpressions = $this->builder->getQuery()->getAST()->selectClause->selectExpressions;
+			foreach ($selectExpressions as $expr) {
+				$expression = $expr->expression;
+
+				if (!is_object($expression)) {
+					$metadata['prefix'] = $expression;
+				} else {
+					$column = $expr->fieldIdentificationVariable !== NULL ? $expr->fieldIdentificationVariable : $expression->field;
+					$value = $expr->fieldIdentificationVariable !== NULL ? $expr->fieldIdentificationVariable : $expression->identificationVariable . '.' . $expression->field;
+					$metadata[$column] = $value;
+				}
+			}
+		}
+		$this->metadata = $metadata;
+	}
+
+
 	public function getRows()
 	{
 		$query = $this->builder->getQuery();
 
 		$result = $query->iterate([], $this->hydrationMode);
-
-		$selectExpressions = $this->builder->getQuery()->getAST()->selectClause->selectExpressions;
-		foreach ($selectExpressions as $expr) {
-			$expression = $expr->expression;
-
-			if (!is_object($expression)) {
-				$this->metadata['prefix'] = $expression;
-			} else {
-				$column = $expr->fieldIdentificationVariable !== NULL ? $expr->fieldIdentificationVariable : $expression->field;
-				$value = $expr->fieldIdentificationVariable !== NULL ? $expr->fieldIdentificationVariable : $expression->identificationVariable . '.' . $expression->field;
-				$this->metadata[$column] = $value;
-			}
-		}
 
 		if ($this->hydrationMode === self::HYDRATION_ARRAY) {
 			return new ArrayResultIterator($result);
@@ -99,9 +112,68 @@ class QueryBuilderSource extends BaseSource
 
 	public function applyFilters($filters)
 	{
-		if ($filters == null)
+		if ($filters == null) {
 			return $this;
+		}
+
+		foreach ($filters as $filter) {
+			if ($filter->notEmpty()) {
+				$this->applyFilter($filter);
+			}
+		}
+
 		return $this;
+	}
+
+
+	protected function applyFilter(FilterObject $filter)
+	{
+		static $fieldCounter = 0;
+
+		$fieldPlaceholder = 'field' . ( ++$fieldCounter);
+
+		$this->extractMetadata();
+		$value = $filter->getValue();
+		$field = isset($this->metadata[$filter->getFilterFieldName()]) ? $this->metadata[$filter->getFilterFieldName()] : $filter->getFilterFieldName();
+		if (is_array($value)) {
+			switch ($filter->getOperator()) {
+				case Filter::IN:
+					$this->builder->field($filter->getField())->in($filter->getValue());
+					break;
+
+				case Filter::RANGE:
+					$date1 = $filter->getValue()['from']->format('Y-m-d');
+					$date2 = $filter->getValue()['to']->format('Y-m-d');
+
+					$this->builder->andWhere(sprintf("%s BETWEEN '%s' AND '%s'", $field, $date1, $date2));
+
+					break;
+			}
+		} else {
+			switch ($filter->getOperator()) {
+				case Filter::LIKE:
+
+					$valuePlaceholder = $fieldPlaceholder . 'Value';
+
+					$this->builder->andHaving(sprintf("%s LIKE :%s", $field, $valuePlaceholder))
+									->setParameter($valuePlaceholder, '%'.$filter->getValue().'%')
+					;
+
+					break;
+
+				case Filter::EQUAL:
+					$valuePlaceholder = $fieldPlaceholder . 'Value';
+
+					$this->builder->andWhere(sprintf("%s = :%s", $valuePlaceholder))
+							->setParameter($valuePlaceholder, $filter->getValue())
+					;
+
+					break;
+
+				case Filter::REFERENCES:
+					break;
+			}
+		}
 	}
 
 
@@ -121,6 +193,12 @@ class QueryBuilderSource extends BaseSource
 		$column = key($sort);
 		$order = $this->sortingDirections[$sort[$column]];
 		$this->builder->orderBy($column, $order);
+	}
+
+
+	public function getMetadata()
+	{
+		return $this->extractMetadata();
 	}
 
 

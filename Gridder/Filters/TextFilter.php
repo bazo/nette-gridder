@@ -28,7 +28,7 @@ class TextFilter extends Filter
 
 	public function getFilter(&$value)
 	{
-		return new FilterObject($this->parent->name, Filter::LIKE, $value);
+		return new FilterObject($this->parent->name, Filter::LIKE, $value, '', $this->originalFieldName);
 	}
 
 

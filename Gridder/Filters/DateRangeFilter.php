@@ -2,7 +2,7 @@
 
 namespace Gridder\Filters;
 
-use Jobzine\Forms\Controls\MultipleDateField;
+use Gridder\Controls\MultipleDateField;
 
 /**
  * Description of TextFilter
