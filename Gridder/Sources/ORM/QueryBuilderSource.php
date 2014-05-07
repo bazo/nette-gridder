@@ -73,6 +73,8 @@ class QueryBuilderSource extends BaseSource
 			}
 		}
 		$this->metadata = $metadata;
+
+		return $metadata;
 	}
 
 
