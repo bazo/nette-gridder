@@ -17,126 +17,130 @@
 		</div>
 	</div>
 
-	{snippet}
-		{*form formOperations class=> 'formOperations'*}
+	{*form formOperations class=> 'formOperations'*}
 
-		<div class="operations" n:if="$hasOperations">
-			{*label operation /}{input operation}{input btnExecuteOperation*}
-			{foreach $operations as $operationName => $operation}
-				{if $operation->isAjax()}
-					{input $operationName class => 'btn btn-primary ajax'}
-				{else}
-					{input $operationName class => 'btn btn-primary'}
-				{/if}
-			{/foreach}
-		</div>
-		{form formFilter}
+	<div class="operations" n:if="$hasOperations">
+		{*label operation /}{input operation}{input btnExecuteOperation*}
+		{foreach $operations as $operationName => $operation}
+			{if $operation->isAjax()}
+				{input $operationName class => 'btn btn-primary ajax'}
+			{else}
+				{input $operationName class => 'btn btn-primary'}
+			{/if}
+		{/foreach}
+	</div>
+	{form formFilter}
 		<table>
 
-				<thead>
-					<tr>
-						<th n:if="$hasOperations">
-							<a href="#" class="all"><span class="icon-ok" title="Select all'"></span></a>
-							<a href="#" class="none"><span class="icon-remove" title="Select none'"></span></a>
-						</th>
-						<th n:foreach="$columns as $column">
-							{if isset($metadata['prefix'])}
-								{var $sortColumn = $metadata['prefix'].'.'.$column}
-							{else}
-								{var $sortColumn = isset($metadata[$column]) ? $metadata[$column] : $column}
-							{/if}
-							<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $sortColumn">
-								{$control[$column]->renderHeader()}
-							</a>
-
-							<span class="ordering-icons">
-								<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($sortColumn)" class="fa fa-chevron-{$control->getColumnOrder($sortColumn)}"></i>
-							</span>
-						</th>
-
-						<th class="actions" n:foreach="$actionColumns as $actionColumn" >
-							{$control[$actionColumn]->renderHeader()}
-						</th>
-					</tr>
-
-					<tr n:if="$hasFilters" class="filters">
-						<th n:if="$hasOperations">
-						</th>
-						<th n:foreach="$columns as $column" n:class="filter">
-							{if $control[$column]->hasFilter()}
-								{$form['filters'][$column]->control}
-							{/if}
-						</th>
-						<th class="actions">
-							{input btnApplyFilters class => 'btn btn-success glyphicon glyphicon-ok'}
-							&nbsp;
-							{input btnCancelFilters class => 'btn btn-danger glyphicon glyphicon-remove'}
-						</th>
-
-					</tr>
-
-				</thead>
-
-			<tfoot>
-
-			</tfoot>
-
-		<tbody>
-			{foreach $rows as $row}
-				<tr n:class="$iterator->odd ? odd, $iterator->even ? even">
-
-					<td n:if="$hasOperations">
-						{?$control->addRecordCheckbox($row->$primaryKey)}
-						{if isset($selectedCheckboxes[$row->$primaryKey])}
-							{?$control['formOperations']['records'][$row->$primaryKey]->setDefaultValue($selectedCheckboxes[$row->$primaryKey])}
+			<thead>
+				<tr>
+					<th n:if="$hasOperations">
+						<a href="#" class="all"><span class="icon-ok" title="Select all'"></span></a>
+						<a href="#" class="none"><span class="icon-remove" title="Select none'"></span></a>
+					</th>
+					<th n:foreach="$columns as $column">
+						{if isset($metadata['prefix'])}
+							{var $sortColumn = $metadata['prefix'].'.'.$column}
+						{else}
+							{var $sortColumn = isset($metadata[$column]) ? $metadata[$column] : $column}
 						{/if}
-						{$control['formOperations']['records'][$row->$primaryKey]->control}
-					</td>
+						<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $sortColumn">
+							{$control[$column]->renderHeader()}
+						</a>
 
-					{foreach $columns as $column}
-						<td>{$control[$column]->setRecord($row)->render()}</td>
-					{/foreach}
-
-					<td class="actions" n:foreach="$actionColumns as $actionColumn">
-						<span class="action" n:foreach="$control[$actionColumn]->getActions() as $action">
-							{$action->setRecord($row)->render()}
+						<span class="ordering-icons">
+							<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($sortColumn)" class="fa fa-chevron-{$control->getColumnOrder($sortColumn)}"></i>
 						</span>
-					</td>
+					</th>
 
+					<th class="actions" n:foreach="$actionColumns as $actionColumn" >
+						{$control[$actionColumn]->renderHeader()}
+					</th>
 				</tr>
-			{/foreach}
 
-		</tbody>
-	</table>
-	{/form}
+				<tr n:if="$hasFilters" class="filters">
+					<th n:if="$hasOperations">
+					</th>
+					<th n:foreach="$columns as $column" n:class="filter">
+						{if $control[$column]->hasFilter()}
+							{$form['filters'][$column]->control}
+								{/if}
+								</th>
+								<th class="actions">
+									{input btnApplyFilters class => 'btn btn-success glyphicon glyphicon-ok'}
+									&nbsp;
+									{input btnCancelFilters class => 'btn btn-danger glyphicon glyphicon-remove'}
+								</th>
 
-	{include 'paginator.latte'}
+							</tr>
 
-	<script type="text/javascript">
-		$(function() {
+						</thead>
 
-			$('.formOperations input[type="checkbox"]').click(function() {
-				$(this).parents('form').ajaxSubmit();
-			});
+						<tfoot>
 
-			$('.formOperations a.all').click(function() {
-				$('.formOperations input[type="checkbox"]').attr('checked', 'checked');
-				$(this).parents('form').ajaxSubmit();
-				return false;
-			});
+						</tfoot>
 
-			$('.formOperations a.none').click(function() {
-				$('.formOperations input[type="checkbox"]').attr('checked', null);
-				$(this).parents('form').ajaxSubmit();
-				return false;
-			});
+						<tbody n:snippet="body">
+							{foreach $rows as $row}
+								<tr n:class="$iterator->odd ? odd, $iterator->even ? even">
 
-			$('.formOperations input[type="submit"].ajax').click(function(event) {
-				$(this).parents('form').ajaxSubmit();
-				event.preventDefault();
-			});
-		});
-	</script>
+									<td n:if="$hasOperations">
+										{?$control->addRecordCheckbox($row->$primaryKey)}
+										{if isset($selectedCheckboxes[$row->$primaryKey])}
+											{?$control['formOperations']['records'][$row->$primaryKey]->setDefaultValue($selectedCheckboxes[$row->$primaryKey])}
+										{/if}
+										{$control['formOperations']['records'][$row->$primaryKey]->control}
+									</td>
 
-{/snippet}
-</div>
+									{foreach $columns as $column}
+										<td>{$control[$column]->setRecord($row)->render()}</td>
+									{/foreach}
+
+									<td class="actions" n:foreach="$actionColumns as $actionColumn">
+										<span class="action" n:foreach="$control[$actionColumn]->getActions() as $action">
+											{$action->setRecord($row)->render()}
+										</span>
+									</td>
+
+								</tr>
+							{/foreach}
+
+						</tbody>
+					</table>
+					{/form}
+
+						{snippet paginator}
+							{include 'paginator.latte'}
+						{/snippet}
+
+						<script type="text/javascript">
+							$(function() {
+
+								$('.formOperations input[type="checkbox"]').click(function() {
+									$(this).parents('form').ajaxSubmit();
+								});
+
+								$('.formOperations a.all').click(function() {
+									$('.formOperations input[type="checkbox"]').attr('checked', 'checked');
+									$(this).parents('form').ajaxSubmit();
+									return false;
+								});
+
+								$('.formOperations a.none').click(function() {
+									$('.formOperations input[type="checkbox"]').attr('checked', null);
+									$(this).parents('form').ajaxSubmit();
+									return false;
+								});
+
+								$('.formOperations input[type="submit"].ajax').click(function(event) {
+									$(this).parents('form').ajaxSubmit();
+									event.preventDefault();
+								});
+
+								$('[name="btnCancelFilters"]').on('click', function(){
+									$('tr.filters').find('input').val(null);
+								});
+							});
+						</script>
+
+					</div>

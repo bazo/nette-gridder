@@ -28,8 +28,8 @@ class DateRangeFilter extends Filter
 
 	public function getFilter(&$value)
 	{
-		$from = new \DateTime($value['from']);
-		$to = new \DateTime($value['to']);
+		$from = !empty($value['from']) ? new \DateTime($value['from']) : NULL;
+		$to = !empty($value['to']) ? new \DateTime($value['to']) : NULL;
 		$mongoValue = [
 			'from' => $from,
 			'to' => $to,
