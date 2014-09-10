@@ -73,6 +73,7 @@ abstract class Filter extends Control implements IFilter
 	public function setOriginalFieldName($originalFieldName)
 	{
 		$this->originalFieldName = $originalFieldName;
+		return $this;
 	}
 
 

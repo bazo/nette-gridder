@@ -25,17 +25,15 @@ class QueryBuilderSource extends BaseSource
 	const HYDRATION_ARRAY = Query::HYDRATE_ARRAY;
 
 
-
 	private $sortingDirections = [
-		Gridder::ORDER_BY_ASC => 'asc',
-		Gridder::ORDER_BY_DESC => 'desc'
+		Gridder::ORDER_BY_ASC	 => 'asc',
+		Gridder::ORDER_BY_DESC	 => 'desc'
 	];
 
 	/** @var QueryBuilder */
 	protected $builder;
 	protected $hydrationMode;
 	protected $supportSFiltering = TRUE;
-
 
 
 	public function __construct(QueryBuilder $queryBuilder, $hydrationMode = self::HYDRATION_SIMPLE)
@@ -50,6 +48,12 @@ class QueryBuilderSource extends BaseSource
 		if ($queryBuilder->getType() != QueryBuilder::SELECT) {
 			throw new Exception('Only QueryBuilder of type QueryBuilder::SELECT is accepted');
 		}
+	}
+
+
+	public function getBuilder()
+	{
+		return $this->builder;
 	}
 
 
@@ -108,7 +112,7 @@ class QueryBuilderSource extends BaseSource
 
 	public function getRecordsByIds($ids)
 	{
-
+		
 	}
 
 
@@ -137,6 +141,7 @@ class QueryBuilderSource extends BaseSource
 		$this->extractMetadata();
 		$value = $filter->getValue();
 		$field = isset($this->metadata[$filter->getFilterFieldName()]) ? $this->metadata[$filter->getFilterFieldName()] : $filter->getFilterFieldName();
+
 		if (is_array($value)) {
 			switch ($filter->getOperator()) {
 				case Filter::IN:
@@ -144,11 +149,12 @@ class QueryBuilderSource extends BaseSource
 					break;
 
 				case Filter::RANGE:
-					$date1 = $filter->getValue()['from']->format('Y-m-d');
-					$date2 = $filter->getValue()['to']->format('Y-m-d');
+					$date1 = $filter->getValue()['from'];
+					$date2 = $filter->getValue()['to'];
 
-					$this->builder->andWhere(sprintf("%s BETWEEN '%s' AND '%s'", $field, $date1, $date2));
-
+					$this->builder->andHaving(sprintf("%s BETWEEN :start AND :end", $field));
+					$this->builder->setParameter('start', $date1);
+					$this->builder->setParameter('end', $date2);
 					break;
 			}
 		} else {
@@ -158,7 +164,7 @@ class QueryBuilderSource extends BaseSource
 					$valuePlaceholder = $fieldPlaceholder . 'Value';
 
 					$this->builder->andHaving(sprintf("%s LIKE :%s", $field, $valuePlaceholder))
-									->setParameter($valuePlaceholder, '%'.$filter->getValue().'%')
+							->setParameter($valuePlaceholder, '%' . $filter->getValue() . '%')
 					;
 
 					break;
@@ -166,10 +172,9 @@ class QueryBuilderSource extends BaseSource
 				case Filter::EQUAL:
 					$valuePlaceholder = $fieldPlaceholder . 'Value';
 
-					$this->builder->andWhere(sprintf("%s = :%s", $valuePlaceholder))
+					$this->builder->andHaving(sprintf("%s = :%s", $field, $valuePlaceholder))
 							->setParameter($valuePlaceholder, $filter->getValue())
 					;
-
 					break;
 
 				case Filter::REFERENCES:
