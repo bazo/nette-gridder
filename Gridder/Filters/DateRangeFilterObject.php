@@ -15,7 +15,7 @@ class DateRangeFilterObject extends FilterObject
 	protected $to;
 
 
-	public function __construct($field, $operator, $value, $from, $to, $originalFieldName = NULL)
+	public function __construct($field, $operator, $value, $from, $to, $originalFieldName)
 	{
 		$this->field = $field;
 		$this->operator = $operator;

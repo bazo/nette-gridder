@@ -2,7 +2,7 @@
 
 namespace Gridder\Filters;
 
-use Jobzine\Forms\Controls\MultipleField;
+use Bazo\Forms\Controls\MultipleField;
 
 /**
  * Description of TextFilter
