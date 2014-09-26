@@ -2,12 +2,13 @@
 
 namespace Gridder;
 
-
 use Gridder\Columns\BooleanColumn;
 use Gridder\Columns\Column;
 use Gridder\Columns\DateTimeColumn;
 use Gridder\Columns\ObjectColumn;
 use Gridder\Columns\TextColumn;
+use Gridder\Columns\TimestampColumn;
+use Gridder\Gridder;
 
 /**
  * @author martin.bazik

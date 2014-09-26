@@ -60,7 +60,7 @@ class BaseColumn extends Control implements Column
 	public function setRecord($record)
 	{
 		$this->record	 = $record;
-		$this->value	 = $record[$this->name];
+		$this->value	 = isset($record[$this->name]) ? $record[$this->name] : NULL;
 		return $this;
 	}
 
