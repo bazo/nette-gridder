@@ -185,7 +185,7 @@ class Gridder extends Control
 
 	public function addTimestampColumn($name, $format = 'd.m.Y')
 	{
-		$column	 = $this->addColumn($name, $type	 = 'datetime');
+		$column	 = $this->addColumn($name, $type = 'timestamp');
 		$column->setFormat($format);
 
 		return $column;
