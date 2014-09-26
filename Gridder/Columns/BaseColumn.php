@@ -2,10 +2,9 @@
 
 namespace Gridder\Columns;
 
+
 use Nette\Application\UI\Control;
 use Gridder\FilterMapper;
-
-
 
 /**
  * BaseColumn
@@ -19,12 +18,11 @@ class BaseColumn extends Control implements Column
 	protected $record;
 	protected $value;
 	protected $hasFilter;
-	protected $sortable = FALSE;
-	public $onCellRender = [];
-	public $onHeaderRender = [];
-	public $valueModifier = [];
-
-
+	protected $sortable		 = FALSE;
+	protected $columnPrefix;
+	public $onCellRender	 = [];
+	public $onHeaderRender	 = [];
+	public $valueModifier	 = [];
 
 	public function getCaption()
 	{
@@ -61,8 +59,8 @@ class BaseColumn extends Control implements Column
 	 */
 	public function setRecord($record)
 	{
-		$this->record = $record;
-		$this->value = $record[$this->name];
+		$this->record	 = $record;
+		$this->value	 = $record[$this->name];
 		return $this;
 	}
 
@@ -142,6 +140,20 @@ class BaseColumn extends Control implements Column
 	{
 		$this->sortable = $sortable;
 		return $this;
+	}
+
+
+	public function enableSort($rootEntity = 'n')
+	{
+		$this->sortable		 = TRUE;
+		$this->columnPrefix	 = $rootEntity;
+		return $this;
+	}
+
+
+	function getColumnPrefix()
+	{
+		return $this->columnPrefix;
 	}
 
 

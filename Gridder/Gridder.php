@@ -61,10 +61,9 @@ class Gridder extends Control
 	/**
 	 * @return \Gridder\Gridder
 	 */
-	public function enableNeo4jMode($column)
+	public function enableNeo4jMode()
 	{
 		$this->neo4jMode	 = TRUE;
-		$this->neo4jColumn	 = $column;
 		return $this;
 	}
 
@@ -503,7 +502,6 @@ class Gridder extends Control
 	{
 		if ($this->neo4jMode) {
 			$this->template->setFile(__DIR__ . '/neo4jTemplate.latte');
-			$this->template->columnPrefix = $this->neo4jColumn;
 		} else {
 			$this->template->setFile(__DIR__ . '/template.latte');
 		}

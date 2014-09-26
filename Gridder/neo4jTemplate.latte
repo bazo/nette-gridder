@@ -38,9 +38,10 @@
 						</th>
 
 						<th n:foreach="$columns as $column">
+							{var $columnPrefix = $control[$column]->getColumnPrefix()}
 							<a class="ajax" n:tag-if="$control[$column]->isSortable()" n:href="orderBy! column => $columnPrefix.'.'.$column">
 								{$control[$column]->renderHeader()}
-							</a>	
+							</a>
 
 							<span class="ordering-icons">
 								<i n:if="$control[$column]->isSortable() && $control->isOrderedByColumn($column)" class="icon-chevron-{$control->getColumnOrder($column)}"></i>
