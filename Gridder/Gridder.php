@@ -63,7 +63,7 @@ class Gridder extends Control
 	 */
 	public function enableNeo4jMode()
 	{
-		$this->neo4jMode	 = TRUE;
+		$this->neo4jMode = TRUE;
 		return $this;
 	}
 
@@ -180,6 +180,15 @@ class Gridder extends Control
 	public function addDateTimeColumn($name)
 	{
 		return $this->addColumn($name, $type = 'datetime');
+	}
+
+
+	public function addTimestampColumn($name, $format = 'd.m.Y')
+	{
+		$column	 = $this->addColumn($name, $type	 = 'datetime');
+		$column->setFormat($format);
+
+		return $column;
 	}
 
 
