@@ -3,7 +3,7 @@
 namespace Gridder\Sources\Neo4j;
 
 use Gridder\Gridder;
-use Bazo\Neo4jTools\Neo4jRowIterator;
+use Gridder\Sources\Neo4j\Neo4jRowIterator;
 use Bazo\Neo4jTools\CypherQueryBuilder;
 
 /**
@@ -33,7 +33,7 @@ class Neo4jCypherSource extends \Gridder\Sources\BaseSource
 	public function getRows()
 	{
 		return new Neo4jRowIterator($this->qb->execute());
-		
+
 	}
 
 
