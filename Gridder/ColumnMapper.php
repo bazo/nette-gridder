@@ -2,42 +2,43 @@
 
 namespace Gridder;
 
+
+use Gridder\Columns\BooleanColumn;
+use Gridder\Columns\Column;
+use Gridder\Columns\DateTimeColumn;
+use Gridder\Columns\ObjectColumn;
+use Gridder\Columns\TextColumn;
+
 /**
- * ColumnMapper
- *
  * @author martin.bazik
  */
 class ColumnMapper
 {
 
-	private static $types = [
-		'string' => 'TextColumn',
-		'object' => 'ObjectColumn',
-		'boolean' => 'BooleanColumn',
-		'datetime' => 'DateTimeColumn'
+	private static $types			 = [
+		'string'	 => TextColumn::class,
+		'object'	 => ObjectColumn::class,
+		'boolean'	 => BooleanColumn::class,
+		'datetime'	 => DateTimeColumn::class,
+		'timestamp'	 => TimestampColumn::class
 	];
-	private static $defaultColumn = 'TextColumn';
-
-
+	private static $defaultColumn	 = TextColumn::class;
 
 	/**
 	 *
-	 * @param Grid $grid
-	 * @param type $name
-	 * @param type $type
-	 * @return Columns\Column
+	 * @param Gridder $grid
+	 * @param string $name
+	 * @param string $type
+	 * @return Column
 	 */
 	public static function map(Gridder $grid, $name, $type)
 	{
-		$namespace = '\Gridder\Columns\\';
-
 		if (isset(self::$types[$type])) {
 			$class = self::$types[$type];
 		} else {
 			$class = self::$defaultColumn;
 		}
 
-		$class = $namespace . $class;
 		return new $class($grid, $name);
 	}
 
