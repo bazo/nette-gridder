@@ -51,7 +51,7 @@ class Neo4jCypherSource extends \Gridder\Sources\BaseSource
 	{
 		$column = key($sort);
 		$order = $this->sortingDirections[$sort[$column]];
-		$this->qb->order("$column $order");
+		$this->qb->order("n.$column $order");
 	}
 
 	public function applyFilters($filters)
@@ -62,7 +62,8 @@ class Neo4jCypherSource extends \Gridder\Sources\BaseSource
 
 	public function limit($offset, $limit)
 	{
-
+		$this->qb->limit($limit);
+		$this->qb->skip($offset);
 		return $this;
 	}
 
