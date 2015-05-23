@@ -13,7 +13,7 @@ use Gridder\Filters\Filter;
  *
  * @author martin.bazik
  */
-class MongoRepositorySource extends BaseSource
+class MongoRepositorySource extends \Gridder\Sources\BaseSource
 {
 
 	/** @var DocumentRepository */
