@@ -250,8 +250,8 @@ class Action extends Component
 
 		$params = [$this->key => $this->value] + $this->params;
 		if (is_string($this->destination)) {
-
-			$href = $this->presenter->link($this->destination, $params);
+			$presenter = $this->lookup('Nette\Application\UI\Presenter', TRUE);
+			$href = $presenter->link($this->destination, $params);
 		}
 		if (is_callable($this->destination)) {
 			$callback = $this->destination;

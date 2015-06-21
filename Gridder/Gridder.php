@@ -54,6 +54,7 @@ class Gridder extends Control
 
 	/** @var bool */
 	public $autoAddFilters = FALSE;
+	public $onAttached = [];
 
 	const ORDER_BY_ASC	 = 'up';
 	const ORDER_BY_DESC	 = 'down';
@@ -108,12 +109,13 @@ class Gridder extends Control
 	}
 
 
-	public function setPresenter(\Nette\Application\UI\Presenter $presenter)
-	{
-		$this->presenter = $presenter;
-		return $this;
-	}
-
+	/*
+	  public function setPresenter(\Nette\Application\UI\Presenter $presenter)
+	  {
+	  $this->presenter = $presenter;
+	  return $this;
+	  }
+	 */
 
 	public function setHasFilters()
 	{
@@ -185,7 +187,7 @@ class Gridder extends Control
 
 	public function addTimestampColumn($name, $format = 'd.m.Y')
 	{
-		$column	 = $this->addColumn($name, $type = 'timestamp');
+		$column	 = $this->addColumn($name, $type	 = 'timestamp');
 		$column->setFormat($format);
 
 		return $column;
@@ -579,6 +581,15 @@ class Gridder extends Control
 		$this->template->ordering			 = $this->persister->ordering;
 		$this->template->metadata			 = $this->source->getMetadata();
 		$this->template->render();
+	}
+
+
+	protected function attached($presenter)
+	{
+		parent::attached($presenter);
+		foreach ($this->onAttached as $callback) {
+			call_user_func_array($callback, [$this, $presenter]);
+		}
 	}
 
 

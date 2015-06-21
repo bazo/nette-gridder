@@ -35,7 +35,7 @@ class ActionColumn extends Control
 	{
 		$title = Strings::lower($title);
 		$action = new Actions\Action($this, $title);
-		$action->setPresenter($this->presenter);
+		//$action->setPresenter($this->presenter);
 		$action->setTitle($title);
 		$action->setDestination($destination);
 		$action->setAjax($ajax);
@@ -86,7 +86,7 @@ class ActionColumn extends Control
 	/**
 	 *
 	 * @param type $action
-	 * @return type 
+	 * @return type
 	 */
 	public function getAction($action)
 	{
@@ -98,7 +98,7 @@ class ActionColumn extends Control
 	/**
 	 *
 	 * @param type $action
-	 * @return \Gridder\Columns\ActionColumn 
+	 * @return \Gridder\Columns\ActionColumn
 	 */
 	public function hideAction($action)
 	{
