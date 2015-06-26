@@ -5,8 +5,6 @@ namespace Gridder\Filters;
 use Gridder\Controls\MultipleDateField;
 
 /**
- * Description of TextFilter
- *
  * @author Martin
  */
 class DateRangeFilter extends Filter
@@ -34,7 +32,7 @@ class DateRangeFilter extends Filter
 			'from' => $from,
 			'to' => $to,
 		];
-		return new DateRangeFilterObject($this->parent->name, self::RANGE, $mongoValue, $value['from'], $value['to']);
+		return new DateRangeFilterObject($this->parent->name, self::RANGE, $mongoValue, $value['from'], $value['to'], $this->originalFieldName);
 	}
 
 

@@ -53,8 +53,8 @@ class Gridder extends Control
 	public $hasFilters;
 
 	/** @var bool */
-	public $autoAddFilters = FALSE;
-	public $onAttached = [];
+	public $autoAddFilters	 = FALSE;
+	public $onAttached		 = [];
 
 	const ORDER_BY_ASC	 = 'up';
 	const ORDER_BY_DESC	 = 'down';
@@ -237,7 +237,7 @@ class Gridder extends Control
 	protected function createComponentFormFilter($name)
 	{
 		$form								 = new Form($this, $name);
-		$form->getElementPrototype()->class	 = 'ajax';
+		//$form->getElementPrototype()->class	 = 'ajax';
 		$form->setTranslator($this->translator);
 
 		$renderer										 = $form->getRenderer();
@@ -255,6 +255,9 @@ class Gridder extends Control
 		$renderer->wrappers['control']['requiredsuffix'] = " \xE2\x80\xA2";
 
 		if ($this->hasFilters) {
+			$form->addSubmit('btnApplyFilters', 'Apply')->onClick[]		 = callback($this, 'saveFilters');
+			$form->addSubmit('btnCancelFilters', 'Cancel')->onClick[]	 = callback($this, 'cancelFilters');
+
 			$filters = $form->addContainer('filters');
 			foreach ($this->getComponents(FALSE, 'Gridder\Columns\Column') as $column) {
 				if ($column->hasFilter()) {
@@ -264,18 +267,13 @@ class Gridder extends Control
 						if (isset($httpData['btnCancelFilters'])) {
 							unset($this->persister->filters);
 							$this->persister->selectedCheckboxes = [];
-							$filters[$column->name]->setValue(NULL);
+							$filters[$column->name]->setDefaultValue(NULL);
 						}
 					} elseif (isset($this->persister->filters[$column->name])) {
 						$filters[$column->name]->setDefaultValue($this->persister->filters[$column->name]->getValue());
 					}
 				}
 			}
-
-			$form->addSubmit('btnApplyFilters', '')->onClick[]		 = callback($this, 'saveFilters');
-			$form['btnApplyFilters']->getControlPrototype()->class	 = 'btn btn-success apply';
-			$form->addSubmit('btnCancelFilters', '')->onClick[]		 = callback($this, 'cancelFilters');
-			$form['btnCancelFilters']->getControlPrototype()->class	 = 'btn btn-danger cancel';
 		}
 	}
 
